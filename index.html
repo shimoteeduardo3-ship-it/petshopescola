@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pet Royal • Clínica & Pet Shop Premium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #1a4a3a;
+      --primary-light: #2d7a60;
+      --accent: #f5c842;
+      --accent2: #e8855a;
+      --whatsapp: #25D366;
+      --light: #faf9f6;
+      --dark: #0d1f18;
+      --gray: #6b7c74;
+      --cream: #f7f2e8;
+      --chat-bg: #e5ddd5;
+      --bubble-them: #ffffff;
+      --bubble-me: #dcf8c6;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: #1e2d27;
+      background: var(--light);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── HEADER ── */
+    header {
+      background: rgba(250,249,246,0.97);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 20px rgba(26,74,58,0.08);
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    nav {
+      display: flex; justify-content: space-between; align-items: center; padding: 16px 0;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 900;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent2); }
+    .logo-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.3px;
+      transition: color 0.25s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 2px; background: var(--accent);
+      transform: scaleX(0); transition: transform 0.3s;
+    }
+    .nav-links a:hover { color: var(--primary-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      letter-spacing: 0.3px;
+    }
+    .btn:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(26,74,58,0.25);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex; align-items: center;
+      background: var(--primary);
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+      opacity: 0.18;
+    }
+
+    .hero-pattern {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(45,122,96,0.4) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 20%, rgba(245,200,66,0.15) 0%, transparent 50%);
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 760px;
+      padding: 80px 0;
+      animation: heroIn 0.9s ease forwards;
+    }
+
+    @keyframes heroIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(245,200,66,0.15);
+      border: 1px solid rgba(245,200,66,0.4);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 30px;
+      margin-bottom: 28px;
+    }
+    .hero-tag::before { content: '✦'; font-size: 0.7rem; }
+
+    #hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 4.4rem;
+      font-weight: 900;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 28px;
+      letter-spacing: -1px;
+    }
+
+    #hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    #hero p {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.75);
+      max-width: 560px;
+      margin-bottom: 48px;
+      font-weight: 300;
+    }
+
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    .btn-hero-main {
+      background: var(--accent);
+      color: var(--dark);
+      padding: 18px 44px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      letter-spacing: 0.3px;
+    }
+    .btn-hero-main:hover {
+      background: #f0bc20;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(245,200,66,0.4);
+    }
+
+    .btn-hero-outline {
+      background: transparent;
+      color: white;
+      padding: 18px 44px;
+      border-radius: 6px;
+      border: 2px solid rgba(255,255,255,0.3);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-hero-outline:hover {
+      border-color: white;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .hero-stats {
+      position: absolute; right: 0; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 16px;
+      z-index: 2;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      padding: 20px 28px;
+      text-align: center;
+      min-width: 140px;
+      transition: all 0.3s;
+    }
+    .stat-card:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateX(-6px);
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.65);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      margin-top: 6px;
+    }
+
+    /* ── FAIXA ── */
+    .faixa {
+      background: var(--accent);
+      padding: 18px 0;
+      overflow: hidden;
+    }
+    .faixa-inner {
+      display: flex; gap: 60px;
+      animation: scroll 20s linear infinite;
+      white-space: nowrap;
+    }
+    .faixa-item {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--dark);
+      flex-shrink: 0;
+    }
+    .faixa-dot { color: var(--accent2); font-size: 1.2rem; }
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── VANTAGENS ── */
+    #vantagens { padding: 110px 0; background: var(--light); }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--primary-light);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-label::before { content: ''; width: 24px; height: 2px; background: var(--accent); }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--dark);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .section-header { margin-bottom: 64px; }
+    .section-header p { color: var(--gray); font-size: 1.1rem; max-width: 560px; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
+
+    .card-vantagem {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(26,74,58,0.07);
+      transition: all 0.4s ease;
+      border: 1px solid rgba(26,74,58,0.06);
+    }
+    .card-vantagem:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 48px rgba(26,74,58,0.15);
+    }
+
+    .card-img { width: 100%; height: 220px; object-fit: cover; display: block; }
+
+    .card-content { padding: 28px 24px; }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      background: var(--cream);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+
+    .card-vantagem h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--primary);
+      font-size: 1.35rem;
+      margin-bottom: 10px;
+    }
+
+    .card-vantagem p { color: var(--gray); font-size: 0.95rem; line-height: 1.65; }
+
+    /* ── PREÇOS ── */
+    #precos { padding: 110px 0; background: var(--cream); }
+
+    .gallery-before-after {
+      display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; margin: 0 0 64px;
+    }
+
+    .before-after-item {
+      text-align: center; width: 100%; max-width: 340px; position: relative;
+    }
+
+    .before-after-item img {
+      width: 100%; height: 260px; object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      transition: transform 0.4s ease;
+      display: block;
+    }
+    .before-after-item img:hover { transform: scale(1.04); }
+
+    .label {
+      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+      background: rgba(13,31,24,0.82);
+      color: white;
+      backdrop-filter: blur(6px);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 20px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.15);
+      white-space: nowrap;
+    }
+
+    .tabela-preco {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(26,74,58,0.1);
+    }
+
+    .tabela-preco th, .tabela-preco td {
+      padding: 18px 22px;
+      text-align: center;
+      border-bottom: 1px solid #eef2ef;
+      font-size: 0.95rem;
+    }
+    .tabela-preco td:first-child { text-align: left; font-weight: 500; }
+
+    .tabela-preco th {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+    .tabela-preco th:first-child { text-align: left; }
+
+    .tabela-preco .preco {
+      font-weight: 700;
+      color: var(--primary-light);
+      font-size: 1.05rem;
+    }
+
+    .tabela-preco .destaque { background: #f0faf5; }
+    .tabela-preco tbody tr:hover { background: #f5fdf8; }
+    .tabela-preco tbody tr:last-child td { border-bottom: none; }
+
+    .tabela-nota {
+      text-align: center;
+      font-style: italic;
+      color: var(--gray);
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+
+    /* ── CTA ── */
+    #cta {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 130px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(45,122,96,0.6) 0%, transparent 60%),
+                  radial-gradient(circle at 75% 30%, rgba(245,200,66,0.1) 0%, transparent 50%);
+    }
+
+    #cta .container { position: relative; z-index: 1; }
+
+    #cta h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.4rem;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    #cta h2 em { font-style: normal; color: var(--accent); }
+
+    #cta p {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.72);
+      max-width: 580px;
+      margin: 0 auto 48px;
+      font-weight: 300;
+    }
+
+    .btn-wpp {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--whatsapp);
+      color: white;
+      padding: 20px 56px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-wpp:hover {
+      background: #1ebe5d;
+      transform: translateY(-3px);
+      box-shadow: 0 14px 36px rgba(37,211,102,0.4);
+    }
+    .btn-wpp-icon { font-size: 1.5rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: #94a89f;
+      padding: 70px 20px 36px;
+    }
+
+    .footer-inner {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: 40px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand .logo { color: white; }
+    .footer-brand p {
+      margin-top: 12px;
+      font-size: 0.92rem;
+      color: #6b7c74;
+      max-width: 260px;
+      line-height: 1.7;
+    }
+
+    .footer-col h4 {
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .footer-col a, .footer-col p {
+      display: block;
+      color: #6b7c74;
+      text-decoration: none;
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+      transition: color 0.25s;
+    }
+    .footer-col a:hover { color: var(--accent); }
+
+    .footer-divider { border: none; border-top: 1px solid #1f2e27; margin-bottom: 28px; }
+
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      font-size: 0.85rem; color: #445a4f;
+    }
+
+    /* ── CHAT ── */
+    #chat-section {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(6px);
+    }
+
+    .chat-modal {
+      width: 100%; max-width: 440px; height: 88vh;
+      background: white; border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column;
+      transform: scale(0.88); opacity: 0;
+      transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    #chat-section.active .chat-modal { transform: scale(1); opacity: 1; }
+
+    .chat-header {
+      background: linear-gradient(135deg, #0a6046, #128C7E);
+      color: white; padding: 18px 22px;
+      font-weight: 600;
+      display: flex; align-items: center; gap: 14px;
+      font-size: 1.05rem;
+    }
+    .chat-header-info { flex: 1; }
+    .chat-header-sub {
+      font-size: 0.78rem;
+      opacity: 0.75;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+    .back-btn { font-size: 1.5rem; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; }
+    .back-btn:hover { opacity: 1; }
+
+    .chat-container {
+      flex: 1; overflow-y: auto; padding: 20px;
+      background: var(--chat-bg) url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png') repeat;
+      background-size: 340px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .message {
+      max-width: 82%; padding: 12px 16px;
+      border-radius: 12px; line-height: 1.5;
+      font-size: 0.96rem;
+      opacity: 0; transform: translateY(10px);
+      animation: msgIn 0.4s forwards;
+    }
+    @keyframes msgIn { to { opacity:1; transform: translateY(0); } }
+
+    .them {
+      background: var(--bubble-them);
+      align-self: flex-start;
+      border-bottom-left-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+    }
+    .me {
+      background: var(--bubble-me);
+      align-self: flex-end;
+      border-bottom-right-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .typing {
+      align-self: flex-start;
+      background: white;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 0.9rem;
+      color: #666;
+      display: flex; gap: 5px; align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .typing-dot {
+      width: 8px; height: 8px;
+      background: #aaa; border-radius: 50%;
+      animation: typingBounce 1.2s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%,60%,100% { transform: translateY(0); background: #aaa; }
+      30% { transform: translateY(-6px); background: #25D366; }
+    }
+
+    .input-area {
+      background: white; padding: 14px 18px;
+      display: flex; gap: 12px; align-items: center;
+      border-top: 1px solid #ececec;
+    }
+
+    #userInput {
+      flex: 1; padding: 13px 18px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 26px;
+      font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.25s;
+    }
+    #userInput:focus {
+      outline: none;
+      border-color: #25D366;
+      box-shadow: 0 0 0 3px rgba(37,211,102,0.15);
+    }
+
+    #sendBtn {
+      background: var(--whatsapp);
+      color: white; border: none;
+      border-radius: 50%; width: 50px; height: 50px;
+      font-size: 1.3rem;
+      cursor: pointer; transition: all 0.25s;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0.55; flex-shrink: 0;
+    }
+    #sendBtn.active { opacity: 1; transform: scale(1.05); }
+    #sendBtn:hover.active { background: #1ebe5d; }
+
+    /* ── AVALIAÇÕES ── */
+    #avaliacoes { padding: 110px 0; background: var(--light); }
+
+    .rating-summary {
+      display: flex; align-items: center; gap: 40px;
+      background: white; border-radius: 20px;
+      padding: 36px 44px;
+      box-shadow: 0 4px 24px rgba(26,74,58,0.08);
+      margin-bottom: 56px;
+      flex-wrap: wrap;
+      border: 1px solid rgba(26,74,58,0.06);
+    }
+
+    .rating-big { text-align: center; min-width: 120px; }
+    .rating-big .num {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem; font-weight: 900;
+      color: var(--primary); line-height: 1;
+    }
+    .rating-big .stars-row { color: #f5a623; font-size: 1.5rem; letter-spacing: 2px; margin: 8px 0 4px; }
+    .rating-big .total { font-size: 0.85rem; color: var(--gray); }
+
+    .rating-bars { flex: 1; min-width: 200px; }
+    .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .bar-row span { font-size: 0.82rem; color: var(--gray); min-width: 40px; }
+    .bar-track { flex: 1; height: 8px; background: #e8efeb; border-radius: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; background: #f5a623; border-radius: 6px; transition: width 1.2s ease; }
+
+    .rating-badge {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white; border-radius: 16px; padding: 24px 32px;
+      text-align: center; min-width: 160px;
+    }
+    .rating-badge .badge-icon { font-size: 2.2rem; margin-bottom: 8px; }
+    .rating-badge .badge-text { font-weight: 700; font-size: 0.95rem; line-height: 1.4; }
+
+    .reviews-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;
+    }
+
+    .review-card {
+      background: white; border-radius: 16px; padding: 28px;
+      box-shadow: 0 4px 20px rgba(26,74,58,0.07);
+      border: 1px solid rgba(26,74,58,0.06);
+      transition: all 0.3s;
+    }
+    .review-card:hover { transform: translateY(-6px); box-shadow: 0 12px 36px rgba(26,74,58,0.13); }
+
+    .review-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .review-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--cream); }
+    .review-avatar-placeholder {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 1.1rem; flex-shrink: 0;
+    }
+    .review-name { font-weight: 700; font-size: 1rem; color: var(--dark); }
+    .review-pet { font-size: 0.82rem; color: var(--gray); margin-top: 2px; }
+    .review-stars { color: #f5a623; font-size: 1.05rem; letter-spacing: 1px; margin-bottom: 12px; }
+    .review-text { color: #3d5249; font-size: 0.95rem; line-height: 1.65; }
+
+    .review-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid #f0f4f2;
+    }
+    .review-date { font-size: 0.8rem; color: var(--gray); }
+    .review-service {
+      background: #eaf5f0; color: var(--primary-light);
+      font-size: 0.75rem; font-weight: 600;
+      padding: 4px 12px; border-radius: 20px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1000px) {
+      .hero-stats { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      #hero h1 { font-size: 2.8rem; }
+      h2 { font-size: 2.3rem; }
+      .nav-links { display: none; }
+      .chat-modal { height: 100vh; border-radius: 0; max-width: none; }
+      .footer-inner { flex-direction: column; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .hero-btns { flex-direction: column; }
+      .btn-hero-main, .btn-hero-outline { text-align: center; }
+      .tabela-preco { font-size: 0.88rem; }
+      .tabela-preco th, .tabela-preco td { padding: 12px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Pet<span>Royal</span><span class="logo-badge">Premium</span></div>
+        <ul class="nav-links">
+          <li><a href="#vantagens">Vantagens</a></li>
+          <li><a href="#precos">Serviços & Preços</a></li>
+          <li><a href="#avaliacoes">Avaliações</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+        <div class="btn" onclick="openChat()">Agendar agora 🐾</div>
+      </nav>
+    </div>
+  </header>
+
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-pattern"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag">São Paulo • SP</div>
+        <h1>O melhor cuidado para quem você <em>mais ama</em></h1>
+        <p>Clínica veterinária completa, banho & tosa premium, hotel e creche — tudo num só lugar, com quem entende de pets.</p>
+        <div class="hero-btns">
+          <div class="btn-hero-main" onclick="openChat()">Agendar pelo chat 🐾</div>
+          <a class="btn-hero-outline" href="https://wa.me/5511944806602" target="_blank">Falar no WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="stat-num">+5k</div>
+          <div class="stat-label">Pets atendidos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">24h</div>
+          <div class="stat-label">Plantão vet.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">98%</div>
+          <div class="stat-label">Satisfação</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="faixa">
+    <div class="faixa-inner">
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Banho & Tosa Premium</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Consulta Veterinária</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Hotel para Pets</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Creche com Playground</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Vacinação</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Produtos Premium</span>
+      <!-- repetido para loop infinito -->
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Banho & Tosa Premium</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Consulta Veterinária</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Hotel para Pets</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Creche com Playground</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Vacinação</span>
+      <span class="faixa-item"><span class="faixa-dot">✦</span> Produtos Premium</span>
+    </div>
+  </div>
+
+  <section id="vantagens">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Diferenciais</div>
+        <h2>Por que escolher a Pet Royal?</h2>
+        <p>Uma equipe apaixonada, estrutura de alto padrão e muito carinho em cada atendimento.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card-vantagem">
+          <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&q=80&w=800" alt="Veterinário cuidando de pet" class="card-img">
+          <div class="card-content">
+            <div class="card-icon">🩺</div>
+            <h3>Veterinários 24 horas</h3>
+            <p>Equipe completa com plantão 24h. Raio-X, ultrassom e laboratório próprio para o diagnóstico rápido e preciso.</p>
+          </div>
+        </div>
+        <div class="card-vantagem">
+          <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=800&auto=format&fit=crop&q=80" alt="Tosa profissional" class="card-img">
+          <div class="card-content">
+            <div class="card-icon">✂️</div>
+            <h3>Profissionais certificados</h3>
+            <p>Tosadores com técnicas internacionais. Produtos premium e hipoalergênicos para deixar seu pet ainda mais lindo.</p>
+          </div>
+        </div>
+        <div class="card-vantagem">
+          <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop&q=80" alt="Hotel para pets" class="card-img">
+          <div class="card-content">
+            <div class="card-icon">🏡</div>
+            <h3>Ambiente seguro e acolhedor</h3>
+            <p>Câmeras 24h, ar-condicionado, piscina rasa e playground coberto. Seu pet merece muito mais que uma gaiola.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="precos">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Serviços & Preços</div>
+        <h2>Tabela de preços</h2>
+        <p>Transparência total. Sem surpresas na hora de pagar.</p>
+      </div>
+
+      <div class="gallery-before-after">
+        <div class="before-after-item">
+          <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?w=600&auto=format&fit=crop&q=80" alt="Antes do banho e tosa">
+          <div class="label">Antes</div>
+        </div>
+        <div class="before-after-item">
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&auto=format&fit=crop&q=80" alt="Depois do banho e tosa">
+          <div class="label">Depois ✨</div>
+        </div>
+      </div>
+
+      <table class="tabela-preco">
+        <thead>
+          <tr>
+            <th>Serviço</th>
+            <th>Porte Pequeno</th>
+            <th>Porte Médio</th>
+            <th>Porte Grande</th>
+            <th>Gato</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Banho + Tosa Higiênica</td>
+            <td class="preco">R$ 89</td>
+            <td class="preco">R$ 109</td>
+            <td class="preco">R$ 139</td>
+            <td class="preco">R$ 79</td>
+          </tr>
+          <tr>
+            <td>Tosa Completa (raça)</td>
+            <td class="preco">R$ 140</td>
+            <td class="preco">R$ 170</td>
+            <td class="preco">R$ 220</td>
+            <td class="preco">—</td>
+          </tr>
+          <tr class="destaque">
+            <td>Banho + Tosa + Hidratante + Perfume</td>
+            <td class="preco">R$ 129</td>
+            <td class="preco">R$ 159</td>
+            <td class="preco">R$ 199</td>
+            <td class="preco">R$ 109</td>
+          </tr>
+          <tr>
+            <td>Hotel / Dia (com banho incluso)</td>
+            <td class="preco">R$ 89</td>
+            <td class="preco">R$ 109</td>
+            <td class="preco">R$ 139</td>
+            <td class="preco">R$ 79</td>
+          </tr>
+          <tr>
+            <td>Creche / Dia (playground + piscina)</td>
+            <td colspan="4" style="text-align:center; font-weight:600; color:var(--primary-light);">R$ 69 (qualquer porte)</td>
+          </tr>
+          <tr>
+            <td>Consulta de Rotina</td>
+            <td colspan="4" class="preco" style="text-align:center;">R$ 180</td>
+          </tr>
+          <tr>
+            <td>Vacinação (cada dose)</td>
+            <td colspan="4" style="text-align:center;">A partir de R$ 90</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="tabela-nota">* Valores válidos em fevereiro/2026. Pacotes mensais e fidelidade com até 25% de desconto.</p>
+    </div>
+  </section>
+
+  <section id="avaliacoes">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Avaliações</div>
+        <h2>O que os tutores dizem 🐾</h2>
+        <p>Mais de 500 avaliações de clientes que confiam na Pet Royal.</p>
+      </div>
+
+      <div class="rating-summary">
+        <div class="rating-big">
+          <div class="num">4,9</div>
+          <div class="stars-row">★★★★★</div>
+          <div class="total">+500 avaliações</div>
+        </div>
+
+        <div class="rating-bars">
+          <div class="bar-row"><span>5 ★</span><div class="bar-track"><div class="bar-fill" style="width:91%"></div></div><span>91%</span></div>
+          <div class="bar-row"><span>4 ★</span><div class="bar-track"><div class="bar-fill" style="width:7%"></div></div><span>7%</span></div>
+          <div class="bar-row"><span>3 ★</span><div class="bar-track"><div class="bar-fill" style="width:1.5%"></div></div><span>1,5%</span></div>
+          <div class="bar-row"><span>2 ★</span><div class="bar-track"><div class="bar-fill" style="width:0.5%"></div></div><span>0,5%</span></div>
+          <div class="bar-row"><span>1 ★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span>0%</span></div>
+        </div>
+
+        <div class="rating-badge">
+          <div class="badge-icon">🏆</div>
+          <div class="badge-text">PetShop<br>Destaque SP<br>2026</div>
+        </div>
+      </div>
+
+      <div class="reviews-grid">
+
+        <div class="review-card">
+          <div class="review-header">
+            <img class="review-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" alt="Fernanda">
+            <div>
+              <div class="review-name">Fernanda Oliveira</div>
+              <div class="review-pet">🐶 Tutora do Thor (Golden, porte grande)</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">Meu Thor saiu do banho parecendo um príncipe! Nunca vi ele tão relaxado e cheiroso. Os funcionários tratam os pets com tanto carinho que dá até ciúmes 😂 Com certeza voltarei sempre!</div>
+          <div class="review-footer">
+            <span class="review-date">há 3 dias</span>
+            <span class="review-service">Banho + Tosa Premium</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <img class="review-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" alt="Ricardo">
+            <div>
+              <div class="review-name">Ricardo Mendes</div>
+              <div class="review-pet">🐱 Tutor da Luna (gata persa)</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">Minha Luna é superestressada com veterinários, mas aqui foi completamente diferente. A equipe tem uma paciência incrível, ela ficou calma durante toda a consulta. Atendimento impecável de verdade!</div>
+          <div class="review-footer">
+            <span class="review-date">há 1 semana</span>
+            <span class="review-service">Consulta de Rotina</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar-placeholder">M</div>
+            <div>
+              <div class="review-name">Mariana Costa</div>
+              <div class="review-pet">🐶 Tutora da Mel (Shih-tzu, porte pequeno)</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">Deixei a Mel no hotel por 5 dias e me senti tão segura! Mandaram fotos e vídeos dela brincando na piscina todos os dias. Quando fui buscar ela não queria nem ir embora 😅 Recomendo de olhos fechados!</div>
+          <div class="review-footer">
+            <span class="review-date">há 2 semanas</span>
+            <span class="review-service">Hotel 5 dias</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <img class="review-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100" alt="Carlos">
+            <div>
+              <div class="review-name">Carlos Eduardo</div>
+              <div class="review-pet">🐶 Tutor do Bob (Labrador, porte grande)</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">O Bob teve uma emergência de madrugada e a equipe veterinária atendeu na hora, sem enrolação. Diagnóstico preciso e tratamento eficiente. Já indiquei para todos os meus amigos com pets. Nota 10!</div>
+          <div class="review-footer">
+            <span class="review-date">há 3 semanas</span>
+            <span class="review-service">Emergência 24h</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <img class="review-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100" alt="Juliana">
+            <div>
+              <div class="review-name">Juliana Ramos</div>
+              <div class="review-pet">🐩 Tutora da Bela (Poodle, porte pequeno)</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">Sou cliente fiel há 2 anos! A tosa da Bela sempre sai perfeita — o tosador conhece cada detalhe da raça. Os produtos usados são de primeira, ela fica hidratada e perfumada por dias. Não troco por nada!</div>
+          <div class="review-footer">
+            <span class="review-date">há 1 mês</span>
+            <span class="review-service">Tosa Completa (raça)</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar-placeholder">A</div>
+            <div>
+              <div class="review-name">André Souza</div>
+              <div class="review-pet">🐶 Tutor do Max e da Nina (Beagles)</div>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">Levo os dois juntos na creche toda semana. Eles chegam em casa exaustos de tanto brincar e felizes demais! O playground é excelente e a equipe supervisiona tudo. Preço justo para a qualidade do serviço!</div>
+          <div class="review-footer">
+            <span class="review-date">há 1 mês</span>
+            <span class="review-service">Creche Diária</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="cta">
+    <div class="container">
+      <h2>Seu pet merece o <em>melhor</em> tratamento</h2>
+      <p>Agende agora mesmo banho, tosa, consulta ou hospedagem. A gente cuida com todo o carinho.</p>
+      <div class="btn-wpp" onclick="openChat()">
+        <span class="btn-wpp-icon">💬</span>
+        Agendar pelo chat
+      </div>
+    </div>
+  </section>
+
+  <footer id="contato">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">Pet<span>Royal</span></div>
+          <p>Clínica & Pet Shop Premium em São Paulo. Cuidando do seu melhor amigo com amor e profissionalismo.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Serviços</h4>
+          <a href="#precos">Banho & Tosa</a>
+          <a href="#precos">Consulta Veterinária</a>
+          <a href="#precos">Hotel & Creche</a>
+          <a href="#precos">Vacinação</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contato</h4>
+          <a href="https://wa.me/5511944806602" target="_blank">📱 (11) 94480-6602</a>
+          <a href="/cdn-cgi/l/email-protection#f49c919590989b979f9095839ab49399959d98da979b99">✉️ <span class="__cf_email__" data-cfemail="2e464b4f4a42414d454a4f59406e49434f4742004d4143">[email&#160;protected]</span></a>
+          <p>📍 São Paulo – SP</p>
+          <p>🕐 Seg–Sáb: 8h às 20h</p>
+        </div>
+      </div>
+
+      <hr class="footer-divider">
+
+      <div class="footer-bottom">
+        <span>© 2026 Pet Royal. Todos os direitos reservados.</span>
+        <span>Feito com carinho para os pets 🐶🐱</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Chat Modal -->
+  <div id="chat-section">
+    <div class="chat-modal">
+      <div class="chat-header">
+        <span class="back-btn" onclick="closeChat()">←</span>
+        <div class="chat-header-info">
+          <div>Pet Royal – Agendamento</div>
+          <div class="chat-header-sub">🟢 Online agora</div>
+        </div>
+      </div>
+      <div class="chat-container" id="chat"></div>
+      <div class="input-area">
+        <input type="text" id="userInput" placeholder="Digite sua mensagem..." autocomplete="off"/>
+        <button id="sendBtn">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    const chatSection = document.getElementById('chat-section');
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    let step = 0;
+    let dados = {};
+
+    const mensagens = [
+      "Oiêeee! 🐶✨ Bem-vind@ ao agendamento da Pet Royal!\nQual é o nome desse(a) lind@ aí?",
+      (nome) => `Awww, ${nome} já conquistou meu coração! 💕\nÉ um(a)...? (cachorrinho, gatinho, coelhinho, etc.)`,
+      "Amei saber! 😍 Agora me conta: porte pequeno, médio, grande ou \"é um mistério da vida\"? 😄",
+      "Perfeito, já tô imaginando ele(a) aqui! 🛁✂️\nQual serviço você quer hoje?\n(Banho + Tosa, Tosa Completa, Consulta, Hotel, Creche...)",
+      "Combinado! 🗓️ Quando você gostaria de trazer esse monstro de fofura? (amanhã, sexta, 15/03...)",
+      "Que horário fica melhor pra vocês? ⏰\n(14h, entre 15h–17h, qualquer um...)",
+      "Quase lá, papai/mamãe! 😘 Qual o seu nome?",
+      "Perfeito! Me passa o telefone com DDD pra gente confirmar tudo, tá? 📱",
+      (nome, tel) => `Uhuuul! Tá tudo certinho! 🎉\n\n🐾 Pet: ${dados.nomePet} (${dados.tipo} — porte ${dados.porte})\n✂️ Serviço: ${dados.servico}\n📅 Data: ${dados.data}\n⏰ Horário: ${dados.horario}\n👤 Você: ${nome} (${tel})\n\nVou abrir o WhatsApp agora para confirmar e garantir o horário! 💨`
+    ];
+
+    function addMessage(text, who = 'them') {
+      const div = document.createElement('div');
+      div.className = `message ${who}`;
+      div.innerHTML = text.replace(/\n/g, '<br>');
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function showTyping() {
+      const el = document.createElement('div');
+      el.className = 'typing';
+      el.id = 'typing';
+      el.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function removeTyping() { document.getElementById('typing')?.remove(); }
+
+    function botResponde() {
+      if (step >= mensagens.length) return;
+      showTyping();
+      setTimeout(() => {
+        removeTyping();
+        let txt = typeof mensagens[step] === 'function'
+          ? mensagens[step](dados.nomePet || dados.nomeDono, dados.telefone)
+          : mensagens[step];
+        addMessage(txt);
+
+        if (step === 8) {
+          setTimeout(() => {
+            const msg = encodeURIComponent(
+              `Oi Pet Royal! Quero confirmar o agendamento:\n\nPet: ${dados.nomePet} (${dados.tipo} — porte ${dados.porte})\nServiço: ${dados.servico}\nData desejada: ${dados.data}\nHorário: ${dados.horario}\nDono: ${dados.nomeDono}\nTelefone: ${dados.telefone}\n\nObrigado! 🐾✨`
+            );
+            window.open(`https://wa.me/5511944806602?text=${msg}`, '_blank');
+            setTimeout(closeChat, 3000);
+          }, 2400);
+        }
+        step++;
+      }, 1200 + Math.random() * 1400);
+    }
+
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      addMessage(text, 'me');
+      input.value = '';
+      sendBtn.classList.remove('active');
+
+      if (step === 1) dados.nomePet = text;
+      else if (step === 2) dados.tipo = text;
+      else if (step === 3) dados.porte = text;
+      else if (step === 4) dados.servico = text;
+      else if (step === 5) dados.data = text;
+      else if (step === 6) dados.horario = text;
+      else if (step === 7) dados.nomeDono = text;
+      else if (step === 8) dados.telefone = text;
+
+      botResponde();
+    }
+
+    function openChat() {
+      chatSection.style.display = 'flex';
+      setTimeout(() => chatSection.classList.add('active'), 20);
+      if (step === 0) {
+        chat.innerHTML = '';
+        showTyping();
+        setTimeout(() => {
+          removeTyping();
+          addMessage(mensagens[0]);
+          step = 1;
+        }, 1000);
+      }
+      input.focus();
+    }
+
+    function closeChat() {
+      chatSection.classList.remove('active');
+      setTimeout(() => chatSection.style.display = 'none', 500);
+    }
+
+    input.addEventListener('input', () => {
+      sendBtn.classList.toggle('active', input.value.trim().length > 0);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    sendBtn.onclick = sendMessage;
+
+    chatSection.addEventListener('click', (e) => {
+      if (e.target === chatSection) closeChat();
+    });
+  </script>
+</body>
+</html>
