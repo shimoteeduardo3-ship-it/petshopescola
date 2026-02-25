@@ -747,6 +747,7 @@
           <li><a href="#vantagens">Vantagens</a></li>
           <li><a href="#precos">Serviços & Preços</a></li>
           <li><a href="#avaliacoes">Avaliações</a></li>
+          <li><a href="#unidades">Unidades</a></li>
           <li><a href="#contato">Contato</a></li>
         </ul>
         <div class="btn" onclick="openChat()">Agendar agora 🐾</div>
@@ -1048,6 +1049,107 @@
     </div>
   </section>
 
+
+  <!-- MAPA SEÇÃO -->
+  <section id="unidades" style="padding:110px 0;background:#0d1a14;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(45,122,96,0.15) 0%,transparent 60%),radial-gradient(circle at 80% 30%,rgba(245,200,66,0.05) 0%,transparent 50%);pointer-events:none;"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <div class="section-label" style="color:#f5c842;">Nossas Unidades</div>
+      <h2 style="color:white;margin-bottom:12px;">Pet Royal em <em style="color:#f5c842;font-style:normal;">toda SP</em></h2>
+      <p style="color:rgba(255,255,255,0.5);margin-bottom:48px;font-size:1rem;max-width:500px;">14 unidades espalhadas por toda São Paulo. Sempre perto de você.</p>
+
+      <!-- Mapa GTA ESTÁTICO -->
+      <div id="mapa-gta" style="position:relative;border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.6);border:2px solid rgba(245,200,66,0.2);">
+        <div style="position:relative;width:100%;height:560px;background:#1a2e24;">
+
+          <!-- iframe com pointer-events:none = mapa estático, sem zoom, sem arrastar -->
+          <iframe id="mapa-frame"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=-46.85,-23.75,-46.45,-23.43&layer=mapnik"
+            style="width:100%;height:100%;border:none;filter:saturate(0.32) brightness(0.48) hue-rotate(115deg);pointer-events:none;"
+            scrolling="no" loading="lazy">
+          </iframe>
+          <!-- Camada de bloqueio total de interação -->
+          <div style="position:absolute;inset:0;z-index:5;cursor:default;background:transparent;"></div>
+
+          <!-- Overlay GTA -->
+          <div style="position:absolute;inset:0;pointer-events:none;z-index:6;background:linear-gradient(to bottom,rgba(13,26,20,0.42) 0%,transparent 22%,transparent 78%,rgba(13,26,20,0.58) 100%);"></div>
+          <!-- Scanlines -->
+          <div style="position:absolute;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.032) 0px,rgba(0,0,0,0.032) 1px,transparent 1px,transparent 4px);"></div>
+          <!-- Vignette -->
+          <div style="position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,transparent 48%,rgba(13,26,20,0.72) 100%);"></div>
+
+          <!-- Pins (acima de tudo) -->
+          <div id="pins-container" style="position:absolute;inset:0;pointer-events:none;z-index:10;"></div>
+
+          <!-- Popup de detalhes ao clicar no R -->
+          <div id="pin-popup" style="display:none;position:absolute;z-index:30;pointer-events:auto;">
+            <div style="background:rgba(8,18,13,0.97);border:1.5px solid rgba(245,200,66,0.6);border-radius:14px;padding:20px 22px;min-width:230px;max-width:280px;box-shadow:0 12px 48px rgba(0,0,0,0.8);backdrop-filter:blur(16px);">
+              <button onclick="document.getElementById('pin-popup').style.display='none'" style="position:absolute;top:12px;right:14px;background:none;border:none;color:rgba(255,255,255,0.35);font-size:1rem;cursor:pointer;line-height:1;transition:color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">✕</button>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                <div id="popup-badge" style="width:26px;height:26px;background:#e8855a;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:Playfair Display,serif;font-weight:900;font-size:0.8rem;color:white;flex-shrink:0;">R</div>
+                <div>
+                  <div id="popup-nome" style="font-family:Playfair Display,serif;font-size:1rem;font-weight:700;color:white;line-height:1.2;"></div>
+                  <div id="popup-end" style="color:rgba(255,255,255,0.45);font-size:0.75rem;margin-top:2px;"></div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-size:0.85rem;flex-shrink:0;">🕐</span>
+                  <div>
+                    <div style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.8px;">Horário</div>
+                    <div id="popup-horario" style="color:#f5c842;font-size:0.85rem;font-weight:700;"></div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-size:0.85rem;flex-shrink:0;">📞</span>
+                  <div>
+                    <div style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.8px;">Telefone</div>
+                    <div id="popup-tel" style="color:rgba(255,255,255,0.85);font-size:0.83rem;font-weight:500;"></div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-size:0.85rem;flex-shrink:0;">🐾</span>
+                  <div>
+                    <div style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.8px;">Serviços</div>
+                    <div id="popup-servicos" style="color:rgba(255,255,255,0.75);font-size:0.78rem;line-height:1.5;"></div>
+                  </div>
+                </div>
+              </div>
+              <div id="popup-status" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;font-size:0.76rem;font-weight:700;padding:5px 12px;border-radius:20px;"></div>
+            </div>
+          </div>
+
+          <!-- HUD inferior esquerdo -->
+          <div style="position:absolute;bottom:20px;left:20px;pointer-events:none;z-index:15;">
+            <div style="background:rgba(13,26,20,0.9);border:1px solid rgba(245,200,66,0.5);border-radius:10px;padding:14px 20px;backdrop-filter:blur(10px);">
+              <div style="font-family:Playfair Display,serif;color:#f5c842;font-size:1.05rem;font-weight:700;letter-spacing:1px;margin-bottom:5px;">🗺 PET ROYAL</div>
+              <div style="color:rgba(255,255,255,0.65);font-size:0.76rem;margin-bottom:3px;">São Paulo — Grande SP</div>
+              <div style="color:#2d7a60;font-size:0.78rem;font-weight:700;">● 14 Unidades Ativas</div>
+            </div>
+          </div>
+
+          <!-- Legenda superior direito -->
+          <div style="position:absolute;top:16px;right:16px;pointer-events:none;z-index:15;">
+            <div style="background:rgba(13,26,20,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;backdrop-filter:blur(10px);">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">
+                <div style="width:22px;height:22px;background:#f5c842;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:900;color:#0d1a14;">R</div>
+                <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;">Unidade Principal</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <div style="width:22px;height:22px;background:#e8855a;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:900;color:white;">R</div>
+                <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;">Demais Unidades</span>
+              </div>
+              <div style="padding-top:9px;border-top:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.38);font-size:0.7rem;">Clique no <strong style="color:rgba(255,255,255,0.6);">R</strong> para detalhes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards das unidades -->
+      <div id="cards-unidades" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:28px;"></div>
+    </div>
+  </section>
+
   <section id="cta">
     <div class="container">
       <h2>Seu pet merece o <em>melhor</em> tratamento</h2>
@@ -1078,7 +1180,7 @@
         <div class="footer-col">
           <h4>Contato</h4>
           <a href="https://wa.me/5511944806602" target="_blank">📱 (11) 94480-6602</a>
-          <a href="/cdn-cgi/l/email-protection#f49c919590989b979f9095839ab49399959d98da979b99">✉️ <span class="__cf_email__" data-cfemail="2e464b4f4a42414d454a4f59406e49434f4742004d4143">[email&#160;protected]</span></a>
+          <a href="mailto:contato@petroyal.com.br">✉️ contato@petroyal.com.br</a>
           <p>📍 São Paulo – SP</p>
           <p>🕐 Seg–Sáb: 8h às 20h</p>
         </div>
@@ -1087,7 +1189,10 @@
       <hr class="footer-divider">
 
       <div class="footer-bottom">
-        <span>© 2026 Pet Royal. Todos os direitos reservados.</span>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+          <span>© 2026 Pet Royal. Todos os direitos reservados.</span>
+          <button onclick="openDashboard()" style="background:rgba(255,255,255,0.07);color:#445a4f;border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 9px;font-size:0.68rem;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(192,57,43,0.5)';this.style.color='white';this.style.borderColor='rgba(192,57,43,0.6)'" onmouseout="this.style.background='rgba(255,255,255,0.07)';this.style.color='#445a4f';this.style.borderColor='rgba(255,255,255,0.1)'">🔒 donos</button>
+        </div>
         <span>Feito com carinho para os pets 🐶🐱</span>
       </div>
     </div>
@@ -1111,7 +1216,422 @@
     </div>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <!-- Dashboard Modal -->
+  <div id="dashboard-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;overflow-y:auto;backdrop-filter:blur(8px);">
+
+    <!-- ════ LOGIN ════ -->
+    <div id="dashboard-login" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;">
+      <div style="background:white;border-radius:20px;padding:52px 48px;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,0.4);">
+        <div style="text-align:center;margin-bottom:36px;">
+          <div style="width:68px;height:68px;background:linear-gradient(135deg,#0d1f18,#1a4a3a);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.9rem;margin:0 auto 16px;box-shadow:0 8px 24px rgba(13,31,24,0.35);">🔒</div>
+          <h2 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.9rem;margin-bottom:6px;">Área Restrita</h2>
+          <p style="color:#9db0a8;font-size:0.87rem;">Pet Royal · Painel de Gestão</p>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:#1a4a3a;margin-bottom:7px;letter-spacing:1px;text-transform:uppercase;">Usuário</label>
+          <input id="login-user" type="text" placeholder="Digite seu usuário" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1.5px solid #e0e8e4;border-radius:10px;font-size:0.95rem;outline:none;font-family:inherit;background:#fafcfb;transition:all 0.2s;" onfocus="this.style.borderColor='#2d7a60';this.style.boxShadow='0 0 0 3px rgba(45,122,96,0.12)'" onblur="this.style.borderColor='#e0e8e4';this.style.boxShadow='none'"/>
+        </div>
+        <div style="margin-bottom:28px;">
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:#1a4a3a;margin-bottom:7px;letter-spacing:1px;text-transform:uppercase;">Senha</label>
+          <input id="login-pass" type="password" placeholder="••••••••" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1.5px solid #e0e8e4;border-radius:10px;font-size:0.95rem;outline:none;font-family:inherit;background:#fafcfb;transition:all 0.2s;" onfocus="this.style.borderColor='#2d7a60';this.style.boxShadow='0 0 0 3px rgba(45,122,96,0.12)'" onblur="this.style.borderColor='#e0e8e4';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <p id="login-error" style="display:none;color:#c0392b;font-size:0.83rem;margin-bottom:16px;text-align:center;background:#fff5f5;padding:10px 14px;border-radius:8px;border-left:3px solid #c0392b;">⚠️ Usuário ou senha incorretos.</p>
+        <button onclick="doLogin()" style="width:100%;background:#0d1f18;color:white;border:none;border-radius:10px;padding:15px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;letter-spacing:0.3px;" onmouseover="this.style.background='#1a4a3a';this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(13,31,24,0.4)'" onmouseout="this.style.background='#0d1f18';this.style.transform='none';this.style.boxShadow='none'">Acessar Painel</button>
+        <button onclick="closeDashboard()" style="width:100%;background:transparent;color:#9db0a8;border:none;margin-top:12px;cursor:pointer;font-size:0.87rem;font-family:inherit;padding:8px;">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- ════ DASHBOARD ════ -->
+    <div id="dashboard-content" style="display:none;min-height:100vh;background:#eef2f0;">
+
+      <!-- TOP BAR -->
+      <div style="background:#0d1f18;padding:0 28px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.4);">
+        <div style="max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;gap:16px;">
+          <div style="display:flex;align-items:center;gap:14px;flex-shrink:0;">
+            <div style="font-family:'Playfair Display',serif;color:white;font-size:1.15rem;font-weight:700;">Pet<span style="color:#f5c842;">Royal</span></div>
+            <span style="color:rgba(255,255,255,0.15);">|</span>
+            <span style="color:rgba(255,255,255,0.45);font-size:0.78rem;">Gestão Interna</span>
+          </div>
+          <div style="display:flex;gap:3px;overflow-x:auto;" id="dash-tabs">
+            <button class="dtab" data-tab="visao"       onclick="switchTab('visao')"       style="white-space:nowrap;background:rgba(245,200,66,0.18);color:#f5c842;border:none;padding:7px 14px;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;">📊 Visão Geral</button>
+            <button class="dtab" data-tab="financeiro"  onclick="switchTab('financeiro')"  style="white-space:nowrap;background:transparent;color:rgba(255,255,255,0.5);border:none;padding:7px 14px;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;">💰 Financeiro</button>
+            <button class="dtab" data-tab="funcionarios" onclick="switchTab('funcionarios')" style="white-space:nowrap;background:transparent;color:rgba(255,255,255,0.5);border:none;padding:7px 14px;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;">👥 Funcionários</button>
+            <button class="dtab" data-tab="folha"       onclick="switchTab('folha')"       style="white-space:nowrap;background:transparent;color:rgba(255,255,255,0.5);border:none;padding:7px 14px;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;">🧾 Folha de Pgto</button>
+            <button class="dtab" data-tab="estoque"     onclick="switchTab('estoque')"     style="white-space:nowrap;background:transparent;color:rgba(255,255,255,0.5);border:none;padding:7px 14px;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;">📦 Estoque</button>
+            <button class="dtab" data-tab="agenda"      onclick="switchTab('agenda')"      style="white-space:nowrap;background:transparent;color:rgba(255,255,255,0.5);border:none;padding:7px 14px;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;">📅 Agenda</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+            <span id="dash-clock" style="color:rgba(255,255,255,0.4);font-size:0.76rem;"></span>
+            <button onclick="closeDashboard()" style="background:rgba(192,57,43,0.75);color:white;border:none;border-radius:7px;padding:7px 15px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.2s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='rgba(192,57,43,0.75)'">✕ Sair</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="max-width:1320px;margin:0 auto;padding:28px 24px;">
+
+        <!-- ══════ ABA VISÃO GERAL ══════ -->
+        <div id="tab-visao">
+          <div style="margin-bottom:24px;">
+            <h1 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.75rem;margin-bottom:4px;">Bom dia, Gestor 👋</h1>
+            <p style="color:#7a9188;font-size:0.88rem;">Fevereiro 2026 — Dashboard executivo · 14 unidades ativas</p>
+          </div>
+
+          <!-- KPIs -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:22px;">
+            <div style="background:white;border-radius:13px;padding:20px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border-top:3px solid #2d7a60;">
+              <div style="font-size:0.7rem;font-weight:700;color:#9db0a8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Faturamento Mensal</div>
+              <div style="font-size:1.85rem;font-weight:900;color:#0d1f18;font-family:'Playfair Display',serif;line-height:1;">R$ 89.340</div>
+              <div style="font-size:0.76rem;color:#2d7a60;font-weight:600;margin-top:6px;">↑ +14,2% vs Janeiro</div>
+            </div>
+            <div style="background:white;border-radius:13px;padding:20px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border-top:3px solid #1a4a3a;">
+              <div style="font-size:0.7rem;font-weight:700;color:#9db0a8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Atendimentos / Mês</div>
+              <div style="font-size:1.85rem;font-weight:900;color:#0d1f18;font-family:'Playfair Display',serif;line-height:1;">847</div>
+              <div style="font-size:0.76rem;color:#2d7a60;font-weight:600;margin-top:6px;">↑ +9,3% vs Janeiro</div>
+            </div>
+            <div style="background:white;border-radius:13px;padding:20px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border-top:3px solid #f5c842;">
+              <div style="font-size:0.7rem;font-weight:700;color:#9db0a8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Ticket Médio</div>
+              <div style="font-size:1.85rem;font-weight:900;color:#0d1f18;font-family:'Playfair Display',serif;line-height:1;">R$ 105,48</div>
+              <div style="font-size:0.76rem;color:#2d7a60;font-weight:600;margin-top:6px;">↑ +4,5% vs Janeiro</div>
+            </div>
+            <div style="background:white;border-radius:13px;padding:20px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border-top:3px solid #e8855a;">
+              <div style="font-size:0.7rem;font-weight:700;color:#9db0a8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Clientes Ativos</div>
+              <div style="font-size:1.85rem;font-weight:900;color:#0d1f18;font-family:'Playfair Display',serif;line-height:1;">3.482</div>
+              <div style="font-size:0.76rem;color:#2d7a60;font-weight:600;margin-top:6px;">+128 novos em Fev</div>
+            </div>
+            <div style="background:white;border-radius:13px;padding:20px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border-top:3px solid #9b59b6;">
+              <div style="font-size:0.7rem;font-weight:700;color:#9db0a8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Avaliação Média</div>
+              <div style="font-size:1.85rem;font-weight:900;color:#0d1f18;font-family:'Playfair Display',serif;line-height:1;">4,9 ★</div>
+              <div style="font-size:0.76rem;color:#7a9188;font-weight:600;margin-top:6px;">1.247 avaliações</div>
+            </div>
+            <div style="background:#0d1f18;border-radius:13px;padding:20px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.12);">
+              <div style="font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Lucro Líquido</div>
+              <div style="font-size:1.85rem;font-weight:900;color:#f5c842;font-family:'Playfair Display',serif;line-height:1;">R$ 31.270</div>
+              <div style="font-size:0.76rem;color:rgba(255,255,255,0.5);font-weight:600;margin-top:6px;">Margem 35,0%</div>
+            </div>
+          </div>
+
+          <!-- Gráfico + Mix de serviços -->
+          <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:18px;">
+            <div style="background:white;border-radius:13px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+                <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.05rem;">📈 Faturamento — Últimos 6 Meses</h3>
+                <span style="font-size:0.72rem;color:#9db0a8;background:#f0f4f2;padding:3px 10px;border-radius:20px;">14 unidades</span>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:10px;height:130px;">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><span style="font-size:0.63rem;color:#9db0a8;font-weight:600;">R$62k</span><div style="background:#dde8e3;border-radius:4px 4px 0 0;width:100%;height:44%;"></div><span style="font-size:0.65rem;color:#aaa;">Set</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><span style="font-size:0.63rem;color:#9db0a8;font-weight:600;">R$68k</span><div style="background:#dde8e3;border-radius:4px 4px 0 0;width:100%;height:52%;"></div><span style="font-size:0.65rem;color:#aaa;">Out</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><span style="font-size:0.63rem;color:#9db0a8;font-weight:600;">R$71k</span><div style="background:#b8d4c8;border-radius:4px 4px 0 0;width:100%;height:59%;"></div><span style="font-size:0.65rem;color:#aaa;">Nov</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><span style="font-size:0.63rem;color:#9db0a8;font-weight:600;">R$84k</span><div style="background:#7db8a5;border-radius:4px 4px 0 0;width:100%;height:74%;"></div><span style="font-size:0.65rem;color:#aaa;">Dez</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><span style="font-size:0.63rem;color:#9db0a8;font-weight:600;">R$78k</span><div style="background:#4a9e85;border-radius:4px 4px 0 0;width:100%;height:66%;"></div><span style="font-size:0.65rem;color:#aaa;">Jan</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><span style="font-size:0.65rem;color:#1a4a3a;font-weight:800;">R$89k</span><div style="background:linear-gradient(to top,#0d1f18,#2d7a60);border-radius:4px 4px 0 0;width:100%;height:100%;box-shadow:0 -3px 12px rgba(45,122,96,0.35);"></div><span style="font-size:0.65rem;color:#1a4a3a;font-weight:800;">Fev ★</span></div>
+              </div>
+            </div>
+            <div style="background:white;border-radius:13px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.05rem;margin-bottom:16px;">🏆 Mix de Serviços</h3>
+              <div style="display:flex;flex-direction:column;gap:11px;">
+                <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px;"><span>Banho & Tosa</span><strong>312 · R$28.080</strong></div><div style="background:#eef2ef;border-radius:20px;height:7px;"><div style="background:#2d7a60;height:7px;border-radius:20px;width:74%;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px;"><span>Consulta Vet.</span><strong>198 · R$29.700</strong></div><div style="background:#eef2ef;border-radius:20px;height:7px;"><div style="background:#1a4a3a;height:7px;border-radius:20px;width:53%;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px;"><span>Hotel & Creche</span><strong>162 · R$19.440</strong></div><div style="background:#eef2ef;border-radius:20px;height:7px;"><div style="background:#f5c842;height:7px;border-radius:20px;width:43%;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px;"><span>Vacinação</span><strong>114 · R$8.550</strong></div><div style="background:#eef2ef;border-radius:20px;height:7px;"><div style="background:#e8855a;height:7px;border-radius:20px;width:30%;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px;"><span>Loja / Ração</span><strong>61 · R$3.570</strong></div><div style="background:#eef2ef;border-radius:20px;height:7px;"><div style="background:#9b59b6;height:7px;border-radius:20px;width:15%;"></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ranking unidades -->
+          <div style="background:white;border-radius:13px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+            <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.05rem;margin-bottom:16px;">🗺 Ranking das Unidades — Fevereiro 2026</h3>
+            <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.82rem;white-space:nowrap;">
+              <thead><tr style="background:#f5f8f6;"><th style="padding:9px 12px;text-align:left;color:#1a4a3a;font-weight:700;">#</th><th style="padding:9px 12px;text-align:left;color:#1a4a3a;font-weight:700;">Unidade</th><th style="padding:9px 12px;text-align:center;color:#1a4a3a;font-weight:700;">Atend.</th><th style="padding:9px 12px;text-align:center;color:#1a4a3a;font-weight:700;">Faturamento</th><th style="padding:9px 12px;text-align:center;color:#1a4a3a;font-weight:700;">Ticket Médio</th><th style="padding:9px 12px;text-align:center;color:#1a4a3a;font-weight:700;">Meta</th></tr></thead>
+              <tbody>
+                <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;font-weight:900;color:#f5c842;font-size:1rem;">🥇</td><td style="padding:9px 12px;font-weight:700;">Bela Vista <span style="background:#fef3c7;color:#92400e;font-size:0.62rem;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;">PRINCIPAL</span></td><td style="padding:9px 12px;text-align:center;">124</td><td style="padding:9px 12px;text-align:center;font-weight:700;color:#2d7a60;">R$ 14.880</td><td style="padding:9px 12px;text-align:center;">R$ 120,00</td><td style="padding:9px 12px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 9px;border-radius:8px;font-weight:700;font-size:0.78rem;">112%</span></td></tr>
+                <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;font-weight:900;color:#9b59b6;font-size:1rem;">🥈</td><td style="padding:9px 12px;font-weight:600;">Itaim Bibi</td><td style="padding:9px 12px;text-align:center;">98</td><td style="padding:9px 12px;text-align:center;font-weight:700;color:#2d7a60;">R$ 11.760</td><td style="padding:9px 12px;text-align:center;">R$ 120,00</td><td style="padding:9px 12px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 9px;border-radius:8px;font-weight:700;font-size:0.78rem;">104%</span></td></tr>
+                <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;font-weight:900;color:#e8855a;font-size:1rem;">🥉</td><td style="padding:9px 12px;font-weight:600;">Moema</td><td style="padding:9px 12px;text-align:center;">87</td><td style="padding:9px 12px;text-align:center;font-weight:700;color:#2d7a60;">R$ 9.570</td><td style="padding:9px 12px;text-align:center;">R$ 110,00</td><td style="padding:9px 12px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 9px;border-radius:8px;font-weight:700;font-size:0.78rem;">98%</span></td></tr>
+                <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;color:#9db0a8;">4</td><td style="padding:9px 12px;">Santana</td><td style="padding:9px 12px;text-align:center;">76</td><td style="padding:9px 12px;text-align:center;color:#2d7a60;">R$ 7.980</td><td style="padding:9px 12px;text-align:center;">R$ 105,00</td><td style="padding:9px 12px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 9px;border-radius:8px;font-weight:700;font-size:0.78rem;">95%</span></td></tr>
+                <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;color:#9db0a8;">5</td><td style="padding:9px 12px;">Perdizes</td><td style="padding:9px 12px;text-align:center;">71</td><td style="padding:9px 12px;text-align:center;color:#2d7a60;">R$ 7.100</td><td style="padding:9px 12px;text-align:center;">R$ 100,00</td><td style="padding:9px 12px;text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 9px;border-radius:8px;font-weight:700;font-size:0.78rem;">89%</span></td></tr>
+                <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;color:#9db0a8;">6–14</td><td colspan="5" style="padding:9px 12px;color:#9db0a8;font-style:italic;">Lapa, Vila Madalena, Pinheiros, Tatuapé, Penha, Ipiranga, Campo Limpo, Consolação, Jabaquara...</td></tr>
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- ══════ ABA FINANCEIRO ══════ -->
+        <div id="tab-financeiro" style="display:none;">
+          <div style="margin-bottom:24px;"><h1 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.75rem;margin-bottom:4px;">💰 Financeiro</h1><p style="color:#7a9188;font-size:0.88rem;">DRE Simplificado · Fevereiro 2026</p></div>
+
+          <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-bottom:18px;">
+            <!-- DRE -->
+            <div style="background:white;border-radius:13px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.05rem;margin-bottom:18px;">📋 DRE — Fevereiro 2026</h3>
+              <table style="width:100%;font-size:0.85rem;border-collapse:collapse;">
+                <tr><td colspan="2" style="padding:8px 0;font-weight:800;color:#0d1f18;font-size:0.95rem;border-bottom:2px solid #0d1f18;">RECEITA BRUTA</td></tr>
+                <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:7px 0 7px 14px;color:#555;">Serviços (banho, tosa, hotel, creche)</td><td style="padding:7px 0;text-align:right;color:#555;">R$ 75.270,00</td></tr>
+                <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:7px 0 7px 14px;color:#555;">Consultas veterinárias</td><td style="padding:7px 0;text-align:right;color:#555;">R$ 10.500,00</td></tr>
+                <tr style="border-bottom:2px solid #eef2ef;"><td style="padding:7px 0 7px 14px;color:#555;">Produtos / loja</td><td style="padding:7px 0;text-align:right;color:#555;">R$ 3.570,00</td></tr>
+                <tr><td style="padding:8px 0;font-weight:800;color:#2d7a60;border-bottom:1px dashed #eef2ef;">TOTAL RECEITAS</td><td style="padding:8px 0;text-align:right;font-weight:800;color:#2d7a60;border-bottom:1px dashed #eef2ef;">R$ 89.340,00</td></tr>
+                <tr><td colspan="2" style="padding:10px 0 7px;font-weight:800;color:#0d1f18;border-bottom:2px solid #0d1f18;">DEDUÇÕES E CUSTOS VARIÁVEIS</td></tr>
+                <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:7px 0 7px 14px;color:#555;">Impostos — Simples Nacional 6,46%</td><td style="padding:7px 0;text-align:right;color:#c0392b;">− R$ 5.771,00</td></tr>
+                <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:7px 0 7px 14px;color:#555;">Insumos / produtos utilizados</td><td style="padding:7px 0;text-align:right;color:#c0392b;">− R$ 12.100,00</td></tr>
+                <tr style="border-bottom:2px solid #eef2ef;"><td style="padding:7px 0 7px 14px;color:#555;">Comissões (10% serviços)</td><td style="padding:7px 0;text-align:right;color:#c0392b;">− R$ 8.934,00</td></tr>
+                <tr><td colspan="2" style="padding:10px 0 7px;font-weight:800;color:#0d1f18;border-bottom:2px solid #0d1f18;">CUSTOS FIXOS</td></tr>
+                <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:7px 0 7px 14px;color:#555;">Salários CLT (28 func.)</td><td style="padding:7px 0;text-align:right;color:#c0392b;">− R$ 22.400,00</td></tr>
+                <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:7px 0 7px 14px;color:#555;">Aluguéis (14 unidades)</td><td style="padding:7px 0;text-align:right;color:#c0392b;">− R$ 5.600,00</td></tr>
+                <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:7px 0 7px 14px;color:#555;">Energia elétrica</td><td style="padding:7px 0;text-align:right;color:#c0392b;">− R$ 1.840,00</td></tr>
+                <tr style="border-bottom:2px solid #eef2ef;"><td style="padding:7px 0 7px 14px;color:#555;">Internet, sistema, outros</td><td style="padding:7px 0;text-align:right;color:#c0392b;">− R$ 1.425,00</td></tr>
+                <tr style="background:#f0faf5;border-radius:8px;"><td style="padding:12px 10px;font-weight:900;color:#1a4a3a;font-family:'Playfair Display',serif;font-size:1.05rem;border-radius:8px 0 0 8px;">LUCRO LÍQUIDO</td><td style="padding:12px 10px;text-align:right;font-weight:900;color:#1a4a3a;font-family:'Playfair Display',serif;font-size:1.05rem;border-radius:0 8px 8px 0;">R$ 31.270,00</td></tr>
+              </table>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <!-- Formas de pagamento -->
+              <div style="background:white;border-radius:13px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.05rem;margin-bottom:14px;">💳 Formas de Pagamento</h3>
+                <div style="display:flex;flex-direction:column;gap:9px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f5f8f6;border-radius:9px;"><div style="display:flex;align-items:center;gap:8px;"><span>💳</span><span style="font-size:0.84rem;">Cartão de Crédito</span></div><div><strong style="color:#0d1f18;">R$ 48.244</strong><span style="color:#9db0a8;font-size:0.72rem;margin-left:6px;">54%</span></div></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f5f8f6;border-radius:9px;"><div style="display:flex;align-items:center;gap:8px;"><span>📱</span><span style="font-size:0.84rem;">PIX</span></div><div><strong style="color:#0d1f18;">R$ 26.802</strong><span style="color:#9db0a8;font-size:0.72rem;margin-left:6px;">30%</span></div></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f5f8f6;border-radius:9px;"><div style="display:flex;align-items:center;gap:8px;"><span>💵</span><span style="font-size:0.84rem;">Dinheiro</span></div><div><strong style="color:#0d1f18;">R$ 8.934</strong><span style="color:#9db0a8;font-size:0.72rem;margin-left:6px;">10%</span></div></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f5f8f6;border-radius:9px;"><div style="display:flex;align-items:center;gap:8px;"><span>🏦</span><span style="font-size:0.84rem;">Débito</span></div><div><strong style="color:#0d1f18;">R$ 5.360</strong><span style="color:#9db0a8;font-size:0.72rem;margin-left:6px;">6%</span></div></div>
+                </div>
+              </div>
+              <!-- Alertas financeiros -->
+              <div style="background:white;border-radius:13px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.05rem;margin-bottom:14px;">⚡ Alertas Financeiros</h3>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="padding:10px 13px;background:#dcfce7;border-radius:8px;border-left:3px solid #2d7a60;font-size:0.81rem;color:#166534;">✅ Meta fevereiro superada em +14,2%</div>
+                  <div style="padding:10px 13px;background:#fef9c3;border-radius:8px;border-left:3px solid #f5c842;font-size:0.81rem;color:#854d0e;">⚠️ Aluguel Campo Limpo vence em 5 dias</div>
+                  <div style="padding:10px 13px;background:#fef9c3;border-radius:8px;border-left:3px solid #f5c842;font-size:0.81rem;color:#854d0e;">⚠️ Unidade Perdizes abaixo da meta (89%)</div>
+                  <div style="padding:10px 13px;background:#fee2e2;border-radius:8px;border-left:3px solid #c0392b;font-size:0.81rem;color:#991b1b;">🔴 Fornecedor vacinas — fatura atrasada 12 dias</div>
+                  <div style="padding:10px 13px;background:#fee2e2;border-radius:8px;border-left:3px solid #c0392b;font-size:0.81rem;color:#991b1b;">🔴 1 funcionário com pagamento pendente (Jorge O.)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════ ABA FUNCIONÁRIOS ══════ -->
+        <div id="tab-funcionarios" style="display:none;">
+          <div style="margin-bottom:24px;"><h1 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.75rem;margin-bottom:4px;">👥 Equipe</h1><p style="color:#7a9188;font-size:0.88rem;">28 funcionários ativos · Fevereiro 2026</p></div>
+
+          <!-- KPIs RH -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px;">
+            <div style="background:#0d1f18;border-radius:12px;padding:18px 20px;"><div style="font-size:0.68rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Total Func.</div><div style="font-size:1.7rem;font-weight:900;color:white;font-family:'Playfair Display',serif;">28</div></div>
+            <div style="background:#1a4a3a;border-radius:12px;padding:18px 20px;"><div style="font-size:0.68rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Custo Folha</div><div style="font-size:1.7rem;font-weight:900;color:white;font-family:'Playfair Display',serif;">R$22.400</div></div>
+            <div style="background:#2d7a60;border-radius:12px;padding:18px 20px;"><div style="font-size:0.68rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Comissões</div><div style="font-size:1.7rem;font-weight:900;color:white;font-family:'Playfair Display',serif;">R$8.934</div></div>
+            <div style="background:#e8855a;border-radius:12px;padding:18px 20px;"><div style="font-size:0.68rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Total RH</div><div style="font-size:1.7rem;font-weight:900;color:white;font-family:'Playfair Display',serif;">R$31.334</div></div>
+            <div style="background:white;border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-top:3px solid #9b59b6;"><div style="font-size:0.68rem;color:#9db0a8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Admissões Fev</div><div style="font-size:1.7rem;font-weight:900;color:#9b59b6;font-family:'Playfair Display',serif;">2</div></div>
+            <div style="background:white;border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-top:3px solid #f5c842;"><div style="font-size:0.68rem;color:#9db0a8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Demissões Fev</div><div style="font-size:1.7rem;font-weight:900;color:#0d1f18;font-family:'Playfair Display',serif;">0</div></div>
+          </div>
+
+          <!-- Cards equipe -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:20px;">
+            <div style="background:white;border-radius:13px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                <div style="width:46px;height:46px;background:linear-gradient(135deg,#1a4a3a,#2d7a60);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">👩‍⚕️</div>
+                <div><div style="font-weight:700;color:#0d1f18;font-size:0.95rem;">Dra. Fernanda Costa</div><div style="font-size:0.75rem;color:#9db0a8;">Médica Veterinária · Bela Vista</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Consultas/mês</div><div style="font-weight:700;color:#1a4a3a;font-size:0.95rem;">198</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Comissão</div><div style="font-weight:700;color:#2d7a60;font-size:0.95rem;">R$1.840</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Salário Base</div><div style="font-weight:700;color:#0d1f18;font-size:0.95rem;">R$4.800</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Avaliação</div><div style="font-weight:700;color:#f5c842;font-size:0.95rem;">4,9 ★</div></div>
+              </div>
+            </div>
+            <div style="background:white;border-radius:13px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                <div style="width:46px;height:46px;background:linear-gradient(135deg,#2d7a60,#4a9e85);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">✂️</div>
+                <div><div style="font-weight:700;color:#0d1f18;font-size:0.95rem;">Lucas Mendes</div><div style="font-size:0.75rem;color:#9db0a8;">Tosador Senior · Bela Vista</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Tosas/mês</div><div style="font-weight:700;color:#1a4a3a;font-size:0.95rem;">148</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Comissão</div><div style="font-weight:700;color:#2d7a60;font-size:0.95rem;">R$1.480</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Salário Base</div><div style="font-weight:700;color:#0d1f18;font-size:0.95rem;">R$2.200</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Avaliação</div><div style="font-weight:700;color:#f5c842;font-size:0.95rem;">4,8 ★</div></div>
+              </div>
+            </div>
+            <div style="background:white;border-radius:13px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                <div style="width:46px;height:46px;background:linear-gradient(135deg,#e8855a,#f0a070);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">🛁</div>
+                <div><div style="font-weight:700;color:#0d1f18;font-size:0.95rem;">Marina Souza</div><div style="font-size:0.75rem;color:#9db0a8;">Banhista · Moema</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Banhos/mês</div><div style="font-weight:700;color:#1a4a3a;font-size:0.95rem;">110</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Comissão</div><div style="font-weight:700;color:#2d7a60;font-size:0.95rem;">R$880</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Salário Base</div><div style="font-weight:700;color:#0d1f18;font-size:0.95rem;">R$1.900</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Avaliação</div><div style="font-weight:700;color:#f5c842;font-size:0.95rem;">4,9 ★</div></div>
+              </div>
+            </div>
+            <div style="background:white;border-radius:13px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                <div style="width:46px;height:46px;background:linear-gradient(135deg,#9b59b6,#c07edd);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">👨‍⚕️</div>
+                <div><div style="font-weight:700;color:#0d1f18;font-size:0.95rem;">Dr. Rafael Torres</div><div style="font-size:0.75rem;color:#9db0a8;">Médico Vet. · Santana</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Consultas/mês</div><div style="font-weight:700;color:#1a4a3a;font-size:0.95rem;">96</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Comissão</div><div style="font-weight:700;color:#2d7a60;font-size:0.95rem;">R$960</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Salário Base</div><div style="font-weight:700;color:#0d1f18;font-size:0.95rem;">R$4.200</div></div>
+                <div style="background:#f5f8f6;border-radius:8px;padding:8px 10px;"><div style="font-size:0.65rem;color:#9db0a8;text-transform:uppercase;">Avaliação</div><div style="font-weight:700;color:#f5c842;font-size:0.95rem;">4,7 ★</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Benefícios -->
+          <div style="background:white;border-radius:13px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+            <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.05rem;margin-bottom:16px;">🎁 Pacote de Benefícios</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;">
+              <div style="padding:14px 16px;background:#f0faf5;border-radius:10px;border:1px solid #c8e6c9;"><div style="font-weight:700;font-size:0.87rem;color:#1a4a3a;margin-bottom:4px;">💊 Plano de Saúde</div><div style="font-size:0.77rem;color:#6b7c74;">Unimed — cobertura básica + dental</div><div style="font-size:0.77rem;font-weight:700;color:#2d7a60;margin-top:4px;">R$ 280/func./mês</div></div>
+              <div style="padding:14px 16px;background:#f0faf5;border-radius:10px;border:1px solid #c8e6c9;"><div style="font-weight:700;font-size:0.87rem;color:#1a4a3a;margin-bottom:4px;">🍽️ Vale Refeição</div><div style="font-size:0.77rem;color:#6b7c74;">Sodexo · R$25/dia útil (~22 dias)</div><div style="font-size:0.77rem;font-weight:700;color:#2d7a60;margin-top:4px;">R$ 550/func./mês</div></div>
+              <div style="padding:14px 16px;background:#f0faf5;border-radius:10px;border:1px solid #c8e6c9;"><div style="font-weight:700;font-size:0.87rem;color:#1a4a3a;margin-bottom:4px;">🚌 Vale Transporte</div><div style="font-size:0.77rem;color:#6b7c74;">Bilhete Único SP descontado em folha</div><div style="font-size:0.77rem;font-weight:700;color:#2d7a60;margin-top:4px;">R$ 220/func./mês</div></div>
+              <div style="padding:14px 16px;background:#f0faf5;border-radius:10px;border:1px solid #c8e6c9;"><div style="font-weight:700;font-size:0.87rem;color:#1a4a3a;margin-bottom:4px;">💰 FGTS</div><div style="font-size:0.77rem;color:#6b7c74;">8% sobre salário bruto — pago ao gov.</div><div style="font-size:0.77rem;font-weight:700;color:#2d7a60;margin-top:4px;">Total: R$ 1.792/mês</div></div>
+              <div style="padding:14px 16px;background:#fef9c3;border-radius:10px;border:1px solid #fde68a;"><div style="font-weight:700;font-size:0.87rem;color:#854d0e;margin-bottom:4px;">🎯 Comissão</div><div style="font-size:0.77rem;color:#6b7c74;">10% sobre serviços prestados</div><div style="font-size:0.77rem;font-weight:700;color:#92400e;margin-top:4px;">R$ 8.934/mês total</div></div>
+              <div style="padding:14px 16px;background:#f3e8ff;border-radius:10px;border:1px solid #ddb0f8;"><div style="font-weight:700;font-size:0.87rem;color:#6b21a8;margin-bottom:4px;">🏆 PLR Anual</div><div style="font-size:0.77rem;color:#6b7c74;">15% do lucro líquido — pago em Dez.</div><div style="font-size:0.77rem;font-weight:700;color:#7c3aed;margin-top:4px;">Estimativa: R$700/func.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════ ABA FOLHA DE PAGAMENTO ══════ -->
+        <div id="tab-folha" style="display:none;">
+          <div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;">
+            <div><h1 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.75rem;margin-bottom:4px;">🧾 Folha de Pagamento</h1><p style="color:#7a9188;font-size:0.88rem;">Competência: Fevereiro 2026 · Processada em 01/02/2026</p></div>
+            <span style="background:#dcfce7;color:#166534;font-size:0.8rem;font-weight:700;padding:7px 16px;border-radius:20px;border:1px solid #bbf7d0;">✅ 27 de 28 pagamentos confirmados</span>
+          </div>
+
+          <!-- Totalizadores -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;">
+            <div style="background:white;border-radius:11px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:3px solid #0d1f18;"><div style="font-size:0.68rem;color:#9db0a8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">Salários Brutos</div><div style="font-size:1.3rem;font-weight:900;color:#0d1f18;font-family:'Playfair Display',serif;">R$22.400</div></div>
+            <div style="background:white;border-radius:11px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:3px solid #2d7a60;"><div style="font-size:0.68rem;color:#9db0a8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">Comissões</div><div style="font-size:1.3rem;font-weight:900;color:#2d7a60;font-family:'Playfair Display',serif;">R$8.934</div></div>
+            <div style="background:white;border-radius:11px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:3px solid #c0392b;"><div style="font-size:0.68rem;color:#9db0a8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">INSS Descontado</div><div style="font-size:1.3rem;font-weight:900;color:#c0392b;font-family:'Playfair Display',serif;">R$2.464</div></div>
+            <div style="background:white;border-radius:11px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:3px solid #9b59b6;"><div style="font-size:0.68rem;color:#9db0a8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">FGTS Emp.</div><div style="font-size:1.3rem;font-weight:900;color:#9b59b6;font-family:'Playfair Display',serif;">R$1.792</div></div>
+            <div style="background:#0d1f18;border-radius:11px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.1);"><div style="font-size:0.68rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">Total Líquido Pago</div><div style="font-size:1.3rem;font-weight:900;color:#f5c842;font-family:'Playfair Display',serif;">R$28.870</div></div>
+          </div>
+
+          <!-- Tabela completa -->
+          <div style="background:white;border-radius:13px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:0.8rem;white-space:nowrap;">
+                <thead>
+                  <tr style="background:#0d1f18;">
+                    <th style="padding:11px 13px;text-align:left;color:rgba(255,255,255,0.7);font-weight:600;">Funcionário</th>
+                    <th style="padding:11px 13px;text-align:left;color:rgba(255,255,255,0.7);font-weight:600;">Cargo</th>
+                    <th style="padding:11px 13px;text-align:center;color:rgba(255,255,255,0.7);font-weight:600;">Unidade</th>
+                    <th style="padding:11px 13px;text-align:right;color:rgba(255,255,255,0.7);font-weight:600;">Sal. Bruto</th>
+                    <th style="padding:11px 13px;text-align:right;color:#f5c842;font-weight:700;">Comissão</th>
+                    <th style="padding:11px 13px;text-align:right;color:rgba(255,255,255,0.7);font-weight:600;">VR</th>
+                    <th style="padding:11px 13px;text-align:right;color:rgba(255,255,255,0.7);font-weight:600;">VT</th>
+                    <th style="padding:11px 13px;text-align:right;color:#ff8a80;font-weight:600;">INSS desc.</th>
+                    <th style="padding:11px 13px;text-align:right;color:#ce93d8;font-weight:600;">FGTS emp.</th>
+                    <th style="padding:11px 13px;text-align:right;color:#69f0ae;font-weight:700;">Líquido</th>
+                    <th style="padding:11px 13px;text-align:center;color:rgba(255,255,255,0.7);font-weight:600;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:10px 13px;font-weight:600;">👩‍⚕️ Dra. Fernanda Costa</td><td style="padding:10px 13px;color:#7a9188;">Méd. Vet.</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Bela Vista</td><td style="padding:10px 13px;text-align:right;">R$4.800</td><td style="padding:10px 13px;text-align:right;color:#2d7a60;font-weight:700;">R$1.840</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$528</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$384</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#0d1f18;">R$6.882</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Pago</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:10px 13px;font-weight:600;">✂️ Lucas Mendes</td><td style="padding:10px 13px;color:#7a9188;">Tosador Sr.</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Bela Vista</td><td style="padding:10px 13px;text-align:right;">R$2.200</td><td style="padding:10px 13px;text-align:right;color:#2d7a60;font-weight:700;">R$1.480</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$242</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$176</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#0d1f18;">R$4.208</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Pago</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:10px 13px;font-weight:600;">🛁 Marina Souza</td><td style="padding:10px 13px;color:#7a9188;">Banhista</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Moema</td><td style="padding:10px 13px;text-align:right;">R$1.900</td><td style="padding:10px 13px;text-align:right;color:#2d7a60;font-weight:700;">R$880</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$209</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$152</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#0d1f18;">R$3.341</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Pago</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:10px 13px;font-weight:600;">👨‍⚕️ Dr. Rafael Torres</td><td style="padding:10px 13px;color:#7a9188;">Méd. Vet.</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Santana</td><td style="padding:10px 13px;text-align:right;">R$4.200</td><td style="padding:10px 13px;text-align:right;color:#2d7a60;font-weight:700;">R$960</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$462</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$336</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#0d1f18;">R$5.468</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Pago</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:10px 13px;font-weight:600;">✂️ Priscila Rocha</td><td style="padding:10px 13px;color:#7a9188;">Tosadora</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Itaim Bibi</td><td style="padding:10px 13px;text-align:right;">R$2.000</td><td style="padding:10px 13px;text-align:right;color:#2d7a60;font-weight:700;">R$1.120</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$220</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$160</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#0d1f18;">R$3.670</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Pago</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:10px 13px;font-weight:600;">🏡 Rodrigo Lima</td><td style="padding:10px 13px;color:#7a9188;">Creche/Hotel</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Vila Madalena</td><td style="padding:10px 13px;text-align:right;">R$1.800</td><td style="padding:10px 13px;text-align:right;color:#2d7a60;font-weight:700;">R$740</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$198</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$144</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#0d1f18;">R$3.112</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Pago</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:10px 13px;font-weight:600;">📋 Ana Paula Dias</td><td style="padding:10px 13px;color:#7a9188;">Recepcionista</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Bela Vista</td><td style="padding:10px 13px;text-align:right;">R$1.600</td><td style="padding:10px 13px;text-align:right;color:#9db0a8;">—</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$176</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$128</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#0d1f18;">R$2.194</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Pago</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:10px 13px;font-weight:600;">🛁 Beatriz Campos</td><td style="padding:10px 13px;color:#7a9188;">Banhista</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Lapa</td><td style="padding:10px 13px;text-align:right;">R$1.900</td><td style="padding:10px 13px;text-align:right;color:#2d7a60;font-weight:700;">R$650</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$209</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$152</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#0d1f18;">R$3.111</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Pago</span></td></tr>
+                  <tr style="border-bottom:2px solid #fee2e2;background:#fff8f8;"><td style="padding:10px 13px;font-weight:600;">🧹 Jorge Oliveira</td><td style="padding:10px 13px;color:#7a9188;">Aux. Geral</td><td style="padding:10px 13px;text-align:center;font-size:0.75rem;">Penha</td><td style="padding:10px 13px;text-align:right;">R$1.412</td><td style="padding:10px 13px;text-align:right;color:#9db0a8;">—</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$550</td><td style="padding:10px 13px;text-align:right;color:#7a9188;">R$220</td><td style="padding:10px 13px;text-align:right;color:#c0392b;">−R$113</td><td style="padding:10px 13px;text-align:right;color:#9b59b6;">R$113</td><td style="padding:10px 13px;text-align:right;font-weight:800;color:#c0392b;">R$2.069</td><td style="padding:10px 13px;text-align:center;"><span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">⏳ Pendente</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;color:#9db0a8;"><td style="padding:10px 13px;font-style:italic;" colspan="11">+ 19 outros funcionários (tosadores, banhistas, recepcionistas, auxiliares nas demais unidades)…</td></tr>
+                  <tr style="background:#0d1f18;">
+                    <td colspan="3" style="padding:12px 13px;font-weight:800;color:white;font-family:'Playfair Display',serif;">TOTAL GERAL (28 func.)</td>
+                    <td style="padding:12px 13px;text-align:right;font-weight:800;color:white;">R$22.400</td>
+                    <td style="padding:12px 13px;text-align:right;font-weight:800;color:#f5c842;">R$8.934</td>
+                    <td style="padding:12px 13px;text-align:right;font-weight:700;color:rgba(255,255,255,0.6);">R$15.400</td>
+                    <td style="padding:12px 13px;text-align:right;font-weight:700;color:rgba(255,255,255,0.6);">R$6.160</td>
+                    <td style="padding:12px 13px;text-align:right;font-weight:800;color:#ff8a80;">−R$2.464</td>
+                    <td style="padding:12px 13px;text-align:right;font-weight:800;color:#ce93d8;">R$1.792</td>
+                    <td style="padding:12px 13px;text-align:right;font-weight:900;color:#69f0ae;font-size:0.95rem;">R$50.230</td>
+                    <td style="padding:12px 13px;text-align:center;"><span style="background:rgba(220,252,231,0.15);color:#69f0ae;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">27/28 OK</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════ ABA ESTOQUE ══════ -->
+        <div id="tab-estoque" style="display:none;">
+          <div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;">
+            <div><h1 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.75rem;margin-bottom:4px;">📦 Controle de Estoque</h1><p style="color:#7a9188;font-size:0.88rem;">Atualizado 25/02/2026 · Estoque central + unidades</p></div>
+            <div style="display:flex;gap:8px;"><span style="background:#fee2e2;color:#991b1b;font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:10px;">🔴 3 críticos</span><span style="background:#fef9c3;color:#854d0e;font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:10px;">⚠️ 4 atenção</span><span style="background:#dcfce7;color:#166534;font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:10px;">✅ 16 OK</span></div>
+          </div>
+          <div style="background:white;border-radius:13px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:0.81rem;white-space:nowrap;">
+                <thead><tr style="background:#0d1f18;"><th style="padding:10px 13px;text-align:left;color:rgba(255,255,255,0.7);font-weight:600;">Produto</th><th style="padding:10px 13px;text-align:center;color:rgba(255,255,255,0.7);font-weight:600;">Categoria</th><th style="padding:10px 13px;text-align:center;color:rgba(255,255,255,0.7);font-weight:600;">Qtd.</th><th style="padding:10px 13px;text-align:center;color:rgba(255,255,255,0.7);font-weight:600;">Mín. Seg.</th><th style="padding:10px 13px;text-align:right;color:rgba(255,255,255,0.7);font-weight:600;">Custo Unit.</th><th style="padding:10px 13px;text-align:right;color:rgba(255,255,255,0.7);font-weight:600;">Valor Total</th><th style="padding:10px 13px;text-align:center;color:rgba(255,255,255,0.7);font-weight:600;">Status</th></tr></thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:10px 13px;font-weight:600;">🧴 Shampoo Premium Cão 500ml</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Higiene</td><td style="padding:10px 13px;text-align:center;font-weight:700;">48</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">20</td><td style="padding:10px 13px;text-align:right;">R$18,50</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$888,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">✅ OK</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:10px 13px;font-weight:600;">🧴 Condicionador Felino 400ml</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Higiene</td><td style="padding:10px 13px;text-align:center;font-weight:700;">22</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">15</td><td style="padding:10px 13px;text-align:right;">R$21,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$462,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">✅ OK</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fff8f8;"><td style="padding:10px 13px;font-weight:600;">🪮 Lâminas de Tosa #10</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Equipamento</td><td style="padding:10px 13px;text-align:center;font-weight:800;color:#c0392b;">2</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">10</td><td style="padding:10px 13px;text-align:right;">R$85,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$170,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">🔴 REPOR JÁ</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fff8f8;"><td style="padding:10px 13px;font-weight:600;">💉 Vacina Antirrábica</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Veterinário</td><td style="padding:10px 13px;text-align:center;font-weight:800;color:#c0392b;">4</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">20</td><td style="padding:10px 13px;text-align:right;">R$32,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$128,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">🔴 CRÍTICO</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fff8f8;"><td style="padding:10px 13px;font-weight:600;">💉 Vacina V10 Cão</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Veterinário</td><td style="padding:10px 13px;text-align:center;font-weight:800;color:#c0392b;">6</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">25</td><td style="padding:10px 13px;text-align:right;">R$28,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$168,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">🔴 CRÍTICO</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fffbf0;"><td style="padding:10px 13px;font-weight:600;">🐾 Ração Premium Adulto 15kg</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Alimentação</td><td style="padding:10px 13px;text-align:center;font-weight:700;color:#e65100;">11</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">15</td><td style="padding:10px 13px;text-align:right;">R$142,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$1.562,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">⚠️ Baixo</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:10px 13px;font-weight:600;">🐱 Ração Gato Sênior 3kg</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Alimentação</td><td style="padding:10px 13px;text-align:center;font-weight:700;">28</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">10</td><td style="padding:10px 13px;text-align:right;">R$68,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$1.904,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">✅ OK</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:10px 13px;font-weight:600;">🧽 Desinfetante Hospitalar 5L</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Limpeza</td><td style="padding:10px 13px;text-align:center;font-weight:700;">19</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">8</td><td style="padding:10px 13px;text-align:right;">R$34,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$646,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">✅ OK</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fffbf0;"><td style="padding:10px 13px;font-weight:600;">💊 Amoxicilina Veterinária</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Medicamento</td><td style="padding:10px 13px;text-align:center;font-weight:700;color:#e65100;">8</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">12</td><td style="padding:10px 13px;text-align:right;">R$45,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$360,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">⚠️ Baixo</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:10px 13px;font-weight:600;">🏷️ Coleira Antipulgas M/G</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Acessório</td><td style="padding:10px 13px;text-align:center;font-weight:700;">34</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">10</td><td style="padding:10px 13px;text-align:right;">R$52,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$1.768,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">✅ OK</span></td></tr>
+                  <tr style="border-bottom:1px solid #f0f4f2;"><td style="padding:10px 13px;font-weight:600;">🩺 Seringa 5ml c/agulha</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Veterinário</td><td style="padding:10px 13px;text-align:center;font-weight:700;">210</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">50</td><td style="padding:10px 13px;text-align:right;">R$0,85</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$178,50</td><td style="padding:10px 13px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">✅ OK</span></td></tr>
+                  <tr style="background:#fffbf0;"><td style="padding:10px 13px;font-weight:600;">💊 Dipirona Veterinária 100ml</td><td style="padding:10px 13px;text-align:center;color:#7a9188;">Medicamento</td><td style="padding:10px 13px;text-align:center;font-weight:700;color:#e65100;">9</td><td style="padding:10px 13px;text-align:center;color:#9db0a8;">12</td><td style="padding:10px 13px;text-align:right;">R$18,00</td><td style="padding:10px 13px;text-align:right;font-weight:600;">R$162,00</td><td style="padding:10px 13px;text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:8px;font-size:0.73rem;font-weight:700;">⚠️ Baixo</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════ ABA AGENDA ══════ -->
+        <div id="tab-agenda" style="display:none;">
+          <div style="margin-bottom:24px;"><h1 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1.75rem;margin-bottom:4px;">📅 Agenda do Dia</h1><p style="color:#7a9188;font-size:0.88rem;">Quarta-feira, 25 de Fevereiro de 2026 · Todas as unidades</p></div>
+
+          <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px;">
+            <div style="background:white;border-radius:13px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;">
+              <div style="background:#0d1f18;padding:14px 18px;"><h3 style="color:white;font-size:0.95rem;font-family:'Playfair Display',serif;">📋 Agendamentos de Hoje (34 no total)</h3></div>
+              <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.81rem;white-space:nowrap;">
+                <thead><tr style="background:#f5f8f6;"><th style="padding:9px 12px;text-align:left;color:#1a4a3a;font-weight:700;">Horário</th><th style="padding:9px 12px;text-align:left;color:#1a4a3a;font-weight:700;">Pet / Tutor</th><th style="padding:9px 12px;text-align:center;color:#1a4a3a;font-weight:700;">Serviço</th><th style="padding:9px 12px;text-align:center;color:#1a4a3a;font-weight:700;">Unidade</th><th style="padding:9px 12px;text-align:center;color:#1a4a3a;font-weight:700;">Status</th></tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;font-weight:800;color:#2d7a60;">08:30</td><td style="padding:9px 12px;font-weight:600;">🐩 Bela / Juliana R.</td><td style="padding:9px 12px;text-align:center;">Tosa Poodle</td><td style="padding:9px 12px;text-align:center;font-size:0.73rem;">Bela Vista</td><td style="padding:9px 12px;text-align:center;"><span style="background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">🔄 Em andamento</span></td></tr>
+                  <tr style="border-top:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:9px 12px;font-weight:800;color:#2d7a60;">09:00</td><td style="padding:9px 12px;font-weight:600;">🐶 Bob / Carlos E.</td><td style="padding:9px 12px;text-align:center;">Consulta Vet.</td><td style="padding:9px 12px;text-align:center;font-size:0.73rem;">Santana</td><td style="padding:9px 12px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Concluído</span></td></tr>
+                  <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;font-weight:800;color:#2d7a60;">10:30</td><td style="padding:9px 12px;font-weight:600;">🐱 Mel / Ana S.</td><td style="padding:9px 12px;text-align:center;">Banho Gato</td><td style="padding:9px 12px;text-align:center;font-size:0.73rem;">Moema</td><td style="padding:9px 12px;text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">✅ Concluído</span></td></tr>
+                  <tr style="border-top:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:9px 12px;font-weight:700;">13:00</td><td style="padding:9px 12px;font-weight:600;">🐶 Max & Nina / André S.</td><td style="padding:9px 12px;text-align:center;">Creche Diária</td><td style="padding:9px 12px;text-align:center;font-size:0.73rem;">V. Madalena</td><td style="padding:9px 12px;text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">⏳ Aguardando</span></td></tr>
+                  <tr style="border-top:1px solid #f0f4f2;background:#fff8f8;"><td style="padding:9px 12px;font-weight:700;">14:00</td><td style="padding:9px 12px;font-weight:600;">🐕 Thor / Marcos P.</td><td style="padding:9px 12px;text-align:center;">Vacinação</td><td style="padding:9px 12px;text-align:center;font-size:0.73rem;">Itaim Bibi</td><td style="padding:9px 12px;text-align:center;"><span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">⚠️ Alerta med.</span></td></tr>
+                  <tr style="border-top:1px solid #f0f4f2;background:#fafcfb;"><td style="padding:9px 12px;font-weight:700;">15:30</td><td style="padding:9px 12px;font-weight:600;">🐱 Luna / Camila F.</td><td style="padding:9px 12px;text-align:center;">Consulta Vet.</td><td style="padding:9px 12px;text-align:center;font-size:0.73rem;">Perdizes</td><td style="padding:9px 12px;text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">⏳ Aguardando</span></td></tr>
+                  <tr style="border-top:1px solid #f0f4f2;"><td style="padding:9px 12px;font-weight:700;">17:00</td><td style="padding:9px 12px;font-weight:600;">🐶 Rex / Patrícia M.</td><td style="padding:9px 12px;text-align:center;">Banho & Tosa</td><td style="padding:9px 12px;text-align:center;font-size:0.73rem;">Tatuapé</td><td style="padding:9px 12px;text-align:center;"><span style="background:#f0f4f2;color:#6b7c74;padding:2px 8px;border-radius:8px;font-size:0.72rem;font-weight:700;">📌 Agendado</span></td></tr>
+                </tbody>
+              </table></div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <div style="background:white;border-radius:13px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1rem;margin-bottom:14px;">📊 Resumo do Dia</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  <div style="background:#f5f8f6;border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.5rem;font-weight:900;color:#1a4a3a;font-family:'Playfair Display',serif;">34</div><div style="font-size:0.73rem;color:#9db0a8;margin-top:2px;">Agendamentos</div></div>
+                  <div style="background:#f5f8f6;border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.5rem;font-weight:900;color:#2d7a60;font-family:'Playfair Display',serif;">12</div><div style="font-size:0.73rem;color:#9db0a8;margin-top:2px;">Concluídos</div></div>
+                  <div style="background:#fef9c3;border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.5rem;font-weight:900;color:#92400e;font-family:'Playfair Display',serif;">3</div><div style="font-size:0.73rem;color:#9db0a8;margin-top:2px;">Cancelamentos</div></div>
+                  <div style="background:#f5f8f6;border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.4rem;font-weight:900;color:#0d1f18;font-family:'Playfair Display',serif;">R$3.580</div><div style="font-size:0.73rem;color:#9db0a8;margin-top:2px;">Previsto hoje</div></div>
+                </div>
+              </div>
+
+              <div style="background:white;border-radius:13px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                <h3 style="font-family:'Playfair Display',serif;color:#0d1f18;font-size:1rem;margin-bottom:14px;">🚨 Alertas Operacionais</h3>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="padding:9px 12px;background:#fee2e2;border-radius:8px;border-left:3px solid #c0392b;font-size:0.8rem;color:#991b1b;">🔴 Thor (14h Itaim) — alérgico a dipirona. Avisar Dr. Rafael.</div>
+                  <div style="padding:9px 12px;background:#fef9c3;border-radius:8px;border-left:3px solid #f5c842;font-size:0.8rem;color:#854d0e;">⚠️ 3 clientes sem confirmação para a tarde</div>
+                  <div style="padding:9px 12px;background:#dcfce7;border-radius:8px;border-left:3px solid #2d7a60;font-size:0.8rem;color:#166534;">✅ Máquina de tosa Bela Vista revisada — OK</div>
+                  <div style="padding:9px 12px;background:#dbeafe;border-radius:8px;border-left:3px solid #1d4ed8;font-size:0.8rem;color:#1e40af;">📦 Pedido de vacinas realizado — entrega 27/02</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p style="text-align:center;color:#b0c4bc;font-size:0.73rem;margin-top:32px;padding-bottom:8px;">Pet Royal Gestão © 2026 · Dados simulados para fins de demonstração escolar</p>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
     const chatSection = document.getElementById('chat-section');
     const chat = document.getElementById('chat');
     const input = document.getElementById('userInput');
@@ -1226,6 +1746,198 @@
     chatSection.addEventListener('click', (e) => {
       if (e.target === chatSection) closeChat();
     });
+
+    // ── MAPA GTA PINS ──
+    const unidades = [
+      { nome: 'Bela Vista',    end: 'R. Augusta, 215',            lat: -23.5508, lng: -46.6481, h: 'Aberto 24h',               tel: '(11) 3333-0001', servicos: 'Banho, Tosa, Consulta Vet, Vacinação, Hotel', principal: true  },
+      { nome: 'Consolação',    end: 'R. da Consolação, 2430',     lat: -23.5530, lng: -46.6592, h: 'Seg–Sáb: 8h às 20h',       tel: '(11) 3333-0002', servicos: 'Banho, Tosa, Consulta Vet',                  principal: false },
+      { nome: 'Vila Madalena', end: 'R. Harmonia, 789',           lat: -23.5517, lng: -46.6907, h: 'Seg–Sáb: 9h às 18h',       tel: '(11) 3333-0003', servicos: 'Banho, Tosa, Creche, Consulta Vet',           principal: false },
+      { nome: 'Pinheiros',     end: 'R. dos Pinheiros, 1040',     lat: -23.5630, lng: -46.6930, h: 'Seg–Sáb: 8h às 20h',       tel: '(11) 3333-0004', servicos: 'Banho, Tosa, Vacinação',                      principal: false },
+      { nome: 'Perdizes',      end: 'R. João Ramalho, 693',       lat: -23.5362, lng: -46.6728, h: 'Seg–Dom: 9h às 20h',       tel: '(11) 3333-0005', servicos: 'Banho, Tosa, Consulta Vet, Creche',           principal: false },
+      { nome: 'Lapa',          end: 'R. Faustolo, 1817',          lat: -23.5239, lng: -46.7032, h: 'Seg–Dom: 9h às 22h',       tel: '(11) 3333-0006', servicos: 'Banho, Tosa, Ração, Acessórios',              principal: false },
+      { nome: 'Santana',       end: 'R. Alfredo Pujol, 1101',     lat: -23.5005, lng: -46.6366, h: 'Aberto 24h',               tel: '(11) 3333-0007', servicos: 'Banho, Tosa, Consulta Vet, Emergência',       principal: false },
+      { nome: 'Moema',         end: 'R. Graúna, 60',              lat: -23.5997, lng: -46.6736, h: 'Seg–Sáb: 9h às 19h',       tel: '(11) 3333-0008', servicos: 'Banho, Tosa, Consulta Vet, Hotel',            principal: false },
+      { nome: 'Itaim Bibi',    end: 'R. Bandeira Paulista, 982',  lat: -23.5881, lng: -46.6748, h: 'Seg–Dom: 8h à meia-noite', tel: '(11) 3333-0009', servicos: 'Banho, Tosa, Consulta Vet, Vacinação',        principal: false },
+      { nome: 'Ipiranga',      end: 'Av. Ricardo Jafet, 730',     lat: -23.5831, lng: -46.6163, h: 'Aberto 24h',               tel: '(11) 3333-0010', servicos: 'Consulta Vet, Emergência, Internação',        principal: false },
+      { nome: 'Penha',         end: 'R. Cel. Rodovalho, 94',      lat: -23.5289, lng: -46.5525, h: 'Seg–Sáb: 8h30 às 19h',    tel: '(11) 3333-0011', servicos: 'Banho, Tosa, Ração, Acessórios',              principal: false },
+      { nome: 'Tatuapé',       end: 'R. Catanduva, 512',          lat: -23.5430, lng: -46.5760, h: 'Seg–Sáb: 9h às 19h',       tel: '(11) 3333-0012', servicos: 'Banho, Tosa, Consulta Vet',                  principal: false },
+      { nome: 'Campo Limpo',   end: 'Estr. do Campo Limpo, 4900', lat: -23.6228, lng: -46.7624, h: 'Aberto 24h',               tel: '(11) 3333-0013', servicos: 'Consulta Vet, Emergência, Banho, Tosa',       principal: false },
+      { nome: 'Jabaquara',     end: 'Av. Jabaquara, 2860',        lat: -23.6400, lng: -46.6450, h: 'Seg–Sáb: 8h às 20h',       tel: '(11) 3333-0014', servicos: 'Banho, Tosa, Vacinação, Creche',              principal: false },
+    ];
+
+    const bbox = { lngMin: -46.85, lngMax: -46.45, latMin: -23.75, latMax: -23.43 };
+
+    function isAberta(h) {
+      if (h.toLowerCase().includes('24h')) return true;
+      const now = new Date();
+      const hhmm = now.getHours() * 60 + now.getMinutes();
+      const match = h.match(/(\d+)h(?:\s*às?\s*|\s*–\s*)(\d+)/);
+      if (!match) return false;
+      return hhmm >= parseInt(match[1]) * 60 && hhmm < parseInt(match[2]) * 60;
+    }
+
+    function showPopup(u, pinEl) {
+      const popup = document.getElementById('pin-popup');
+      const mapContainer = document.querySelector('#mapa-gta > div');
+      const mapRect = mapContainer.getBoundingClientRect();
+      const pinRect = pinEl.getBoundingClientRect();
+
+      const badge = document.getElementById('popup-badge');
+      badge.style.background = u.principal ? '#f5c842' : '#e8855a';
+      badge.style.color = u.principal ? '#0d1a14' : 'white';
+      document.getElementById('popup-nome').textContent = u.nome;
+      document.getElementById('popup-end').textContent = u.end;
+      document.getElementById('popup-horario').textContent = u.h;
+      document.getElementById('popup-tel').textContent = u.tel;
+      document.getElementById('popup-servicos').textContent = u.servicos;
+
+      const aberta = isAberta(u.h);
+      const statusEl = document.getElementById('popup-status');
+      statusEl.textContent = aberta ? '● Aberta agora' : '○ Fechada agora';
+      statusEl.style.background = aberta ? 'rgba(45,122,96,0.3)' : 'rgba(192,57,43,0.25)';
+      statusEl.style.color = aberta ? '#4ade80' : '#f87171';
+
+      const relX = pinRect.left - mapRect.left + pinRect.width / 2;
+      const relY = pinRect.top - mapRect.top;
+      popup.style.left = Math.min(Math.max(relX - 130, 8), mapRect.width - 290) + 'px';
+      popup.style.top = Math.max(relY - 205, 8) + 'px';
+      popup.style.display = 'block';
+    }
+
+    function buildCards() {
+      const grid = document.getElementById('cards-unidades');
+      if (!grid) return;
+      grid.innerHTML = unidades.map((u, i) => `
+        <div onclick="scrollToPin(${i})"
+          style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;cursor:pointer;transition:all 0.25s;"
+          onmouseover="this.style.background='rgba(232,133,90,0.12)';this.style.borderColor='rgba(232,133,90,0.45)';this.style.transform='translateY(-3px)'"
+          onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.borderColor='rgba(255,255,255,0.08)';this.style.transform='translateY(0)'">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">
+            <div style="width:24px;height:24px;background:${u.principal ? '#f5c842' : '#e8855a'};border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.75rem;color:${u.principal ? '#0d1a14' : 'white'};flex-shrink:0;">R</div>
+            <strong style="color:white;font-size:0.88rem;">${u.nome}</strong>
+            ${u.principal ? '<span style="background:#f5c842;color:#0d1a14;font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:auto;">PRINCIPAL</span>' : ''}
+          </div>
+          <div style="color:rgba(255,255,255,0.45);font-size:0.76rem;margin-bottom:4px;">${u.end}</div>
+          <div style="color:#2d7a60;font-size:0.74rem;font-weight:600;">● ${u.h}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderPins() {
+      const container = document.getElementById('pins-container');
+      if (!container) return;
+      container.innerHTML = '';
+      unidades.forEach((u, i) => {
+        const xPct = ((u.lng - bbox.lngMin) / (bbox.lngMax - bbox.lngMin)) * 100;
+        const yPct = ((u.lat - bbox.latMin) / (bbox.latMax - bbox.latMin)) * 100;
+        const pin = document.createElement('div');
+        pin.id = `pin-${i}`;
+        pin.style.cssText = `position:absolute;left:${xPct}%;top:${yPct}%;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;z-index:10;`;
+        const bg = u.principal ? '#f5c842' : '#e8855a';
+        const tc = u.principal ? '#0d1a14' : 'white';
+        const sz = u.principal ? '34px' : '26px';
+        const fs = u.principal ? '0.88rem' : '0.72rem';
+        pin.innerHTML = `
+          <div class="r-pin" style="position:relative;width:${sz};height:${sz};background:${bg};border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:${fs};color:${tc};box-shadow:0 0 0 3px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.7);transition:transform 0.18s,box-shadow 0.18s;user-select:none;">
+            R
+            <div style="position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid ${bg};pointer-events:none;"></div>
+          </div>`;
+        const pinEl = pin.querySelector('.r-pin');
+        pinEl.addEventListener('mouseenter', () => {
+          pinEl.style.transform = 'scale(1.3)';
+          pinEl.style.boxShadow = '0 0 0 4px rgba(245,200,66,0.5),0 8px 28px rgba(0,0,0,0.9)';
+        });
+        pinEl.addEventListener('mouseleave', () => {
+          pinEl.style.transform = 'scale(1)';
+          pinEl.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.7)';
+        });
+        pinEl.addEventListener('click', (e) => { e.stopPropagation(); showPopup(u, pinEl); });
+        container.appendChild(pin);
+      });
+    }
+
+    function scrollToPin(index) {
+      document.getElementById('unidades').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        const pinEl = document.querySelector(`#pin-${index} .r-pin`);
+        if (pinEl) {
+          pinEl.style.transform = 'scale(1.5)';
+          pinEl.style.boxShadow = '0 0 0 4px rgba(245,200,66,0.8),0 8px 28px rgba(245,200,66,0.4)';
+          setTimeout(() => {
+            pinEl.style.transform = 'scale(1)';
+            pinEl.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.7)';
+            showPopup(unidades[index], pinEl);
+          }, 550);
+        }
+      }, 750);
+    }
+
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('pin-popup');
+      if (popup && popup.style.display !== 'none' && !popup.contains(e.target) && !e.target.classList.contains('r-pin')) {
+        popup.style.display = 'none';
+      }
+    });
+
+    window.addEventListener('load', () => { buildCards(); renderPins(); });
+    window.addEventListener('resize', renderPins);
+
+    // ── DASHBOARD ──
+    function openDashboard() {
+      document.getElementById('dashboard-overlay').style.display = 'block';
+      document.getElementById('dashboard-login').style.display = 'flex';
+      document.getElementById('dashboard-content').style.display = 'none';
+      document.getElementById('login-error').style.display = 'none';
+      document.getElementById('login-user').value = '';
+      document.getElementById('login-pass').value = '';
+    }
+
+    function closeDashboard() {
+      document.getElementById('dashboard-overlay').style.display = 'none';
+    }
+
+    function doLogin() {
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+      if (user === 'AuraFarm' && pass === '67') {
+        document.getElementById('dashboard-login').style.display = 'none';
+        document.getElementById('dashboard-content').style.display = 'block';
+        switchTab('visao');
+        // ── RELÓGIO: atualiza imediatamente e depois a cada segundo ──
+        updateClock();
+        setInterval(updateClock, 1000);
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+      }
+    }
+
+    function switchTab(tab) {
+      const tabs = ['visao','financeiro','funcionarios','folha','estoque','agenda'];
+      tabs.forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        if (el) el.style.display = (t === tab) ? 'block' : 'none';
+      });
+      document.querySelectorAll('.dtab').forEach(btn => {
+        const isActive = btn.getAttribute('data-tab') === tab;
+        btn.style.background = isActive ? 'rgba(245,200,66,0.18)' : 'transparent';
+        btn.style.color = isActive ? '#f5c842' : 'rgba(255,255,255,0.5)';
+      });
+    }
+
+    function updateClock() {
+      const el = document.getElementById('dash-clock');
+      if (el) {
+        const now = new Date();
+        el.textContent = now.toLocaleString('pt-BR', {
+          weekday: 'short',
+          day: '2-digit',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      }
+    }
   </script>
 </body>
 </html>
