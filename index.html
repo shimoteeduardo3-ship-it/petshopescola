@@ -1175,6 +1175,7 @@
           <a href="#precos">Consulta Veterinária</a>
           <a href="#precos">Hotel & Creche</a>
           <a href="#precos">Vacinação</a>
+
         </div>
 
         <div class="footer-col">
@@ -1637,21 +1638,207 @@
     const input = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
 
-    let step = 0;
+    // ── DADOS DO AGENDAMENTO ──
     let dados = {};
+    let etapa = 'inicio';
+    let chatAberto = false;
 
-    const mensagens = [
-      "Oiêeee! 🐶✨ Bem-vind@ ao agendamento da Pet Royal!\nQual é o nome desse(a) lind@ aí?",
-      (nome) => `Awww, ${nome} já conquistou meu coração! 💕\nÉ um(a)...? (cachorrinho, gatinho, coelhinho, etc.)`,
-      "Amei saber! 😍 Agora me conta: porte pequeno, médio, grande ou \"é um mistério da vida\"? 😄",
-      "Perfeito, já tô imaginando ele(a) aqui! 🛁✂️\nQual serviço você quer hoje?\n(Banho + Tosa, Tosa Completa, Consulta, Hotel, Creche...)",
-      "Combinado! 🗓️ Quando você gostaria de trazer esse monstro de fofura? (amanhã, sexta, 15/03...)",
-      "Que horário fica melhor pra vocês? ⏰\n(14h, entre 15h–17h, qualquer um...)",
-      "Quase lá, papai/mamãe! 😘 Qual o seu nome?",
-      "Perfeito! Me passa o telefone com DDD pra gente confirmar tudo, tá? 📱",
-      (nome, tel) => `Uhuuul! Tá tudo certinho! 🎉\n\n🐾 Pet: ${dados.nomePet} (${dados.tipo} — porte ${dados.porte})\n✂️ Serviço: ${dados.servico}\n📅 Data: ${dados.data}\n⏰ Horário: ${dados.horario}\n👤 Você: ${nome} (${tel})\n\nVou abrir o WhatsApp agora para confirmar e garantir o horário! 💨`
-    ];
+    // ── PREÇOS ──
+    const precos = {
+      'banho tosa': { p: 89, m: 109, g: 139, gato: 79 },
+      'tosa completa': { p: 140, m: 170, g: 220, gato: null },
+      'banho hidratante': { p: 129, m: 159, g: 199, gato: 109 },
+      'hotel': { p: 89, m: 109, g: 139, gato: 79 },
+      'creche': { todos: 69 },
+      'consulta': { todos: 180 },
+      'vacinacao': { min: 90 }
+    };
 
+    // ── FLUXO DE ETAPAS ──
+    const fluxo = {
+      inicio:    { campo: null,       prox: 'nomePet'  },
+      nomePet:   { campo: 'nomePet',  prox: 'tipo'     },
+      tipo:      { campo: 'tipo',     prox: 'porte'    },
+      porte:     { campo: 'porte',    prox: 'servico'  },
+      servico:   { campo: 'servico',  prox: 'data'     },
+      data:      { campo: 'data',     prox: 'horario'  },
+      horario:   { campo: 'horario',  prox: 'nomeDono' },
+      nomeDono:  { campo: 'nomeDono', prox: 'telefone' },
+      telefone:  { campo: 'telefone', prox: 'fim'      },
+      fim:       { campo: null,       prox: null       },
+      duvida:    { campo: null,       prox: null       }
+    };
+
+    // ── DETECTA INTENÇÃO DA MENSAGEM ──
+    function detectaIntencao(msg) {
+      const m = msg.toLowerCase();
+      if (/preço|quanto|custa|valor|tabela/.test(m)) return 'preco';
+      if (/unidade|onde|endereço|bairro|fica|localiz/.test(m)) return 'unidade';
+      if (/horário|hora|abre|fecha|funciona|atende|plantão/.test(m)) return 'horario_func';
+      if (/serviç|ofereç|tem|faz|disponível/.test(m)) return 'servicos';
+      if (/oi|olá|boa|tudo|bem|hey/.test(m) && m.length < 20) return 'saudacao';
+      if (/sim|quero|vamos|pode|ok|bora|claro|vou|queria|gostaria|agendar/.test(m)) return 'confirma';
+      if (/não|nao|obrigad|valeu|tchau|outro/.test(m)) return 'nega';
+      return 'normal';
+    }
+
+    // ── DETECTA PORTE NA MENSAGEM ──
+    function detectaPorte(msg) {
+      const m = msg.toLowerCase();
+      if (/peque|mini|toy|nano/.test(m)) return 'pequeno';
+      if (/médio|medio|mid/.test(m)) return 'médio';
+      if (/grand|giant|xl|labrador|golden|pastor|borde|huskymalinois/.test(m)) return 'grande';
+      if (/gato|felino|cat/.test(m)) return 'gato';
+      return null;
+    }
+
+    // ── DETECTA SERVIÇO NA MENSAGEM ──
+    function detectaServico(msg) {
+      const m = msg.toLowerCase();
+      if (/banho.*tosa|tosa.*banho/.test(m) && /hidrat|perfum|premium/.test(m)) return 'Banho + Tosa Premium';
+      if (/banho.*tosa|tosa.*banho/.test(m)) return 'Banho + Tosa';
+      if (/tosa compl|tosa de raça|tosa racial/.test(m)) return 'Tosa Completa';
+      if (/banho/.test(m)) return 'Banho';
+      if (/tosa/.test(m)) return 'Tosa Higiênica';
+      if (/hotel|hospedagem|hosped/.test(m)) return 'Hotel';
+      if (/creche|daycare/.test(m)) return 'Creche';
+      if (/consult|veterinár|vet\b|check/.test(m)) return 'Consulta Veterinária';
+      if (/vacin/.test(m)) return 'Vacinação';
+      if (/emergên|urgent|socorro|doen/.test(m)) return 'Emergência';
+      return null;
+    }
+
+    // ── RESPOSTAS PARA DÚVIDAS ──
+    function respostaDuvida(intencao, msg) {
+      const m = msg.toLowerCase();
+      if (intencao === 'preco') {
+        if (/banho.*tosa|tosa.*banho/.test(m)) {
+          return `Os preços do Banho + Tosa são:\n🐕 Pequeno: R$89 | Médio: R$109 | Grande: R$139\n🐱 Gato: R$79\n\nTemos também o pacote Premium (com hidratante e perfume) por um pouco a mais! Quer agendar? 😊`;
+        }
+        if (/hotel/.test(m)) return `Hotel com banho incluso:\n🐕 Pequeno: R$89/dia | Médio: R$109/dia | Grande: R$139/dia\n🐱 Gato: R$79/dia\nAcomodações super confortáveis! Quer reservar? 🏡`;
+        if (/creche/.test(m)) return `Creche com playground e piscina: apenas R$69/dia para qualquer porte! 🎾 Eles adoram! Quer agendar?`;
+        if (/consult/.test(m)) return `Consulta de rotina: R$180. Temos médicos veterinários 24h disponíveis! Quer marcar? 🩺`;
+        if (/vacin/.test(m)) return `Vacinação a partir de R$90/dose. Posso já agendar para o seu pet! 💉`;
+        return `Claro! Os principais preços:\n\n✂️ Banho+Tosa: R$89–R$139\n🏡 Hotel/dia: R$89–R$139\n🎾 Creche/dia: R$69\n🩺 Consulta: R$180\n💉 Vacinação: a partir de R$90\n\nQuer saber o valor exato para o seu pet? Me conta o serviço e o porte! 😊`;
+      }
+      if (intencao === 'unidade') {
+        return `Temos 14 unidades em SP! 📍\nAs 24h são: Bela Vista, Santana, Ipiranga e Campo Limpo.\nTambém estamos em: Itaim Bibi, Moema, Vila Madalena, Pinheiros, Perdizes, Lapa, Tatuapé, Penha, Consolação e Jabaquara.\n\nQual bairro fica mais perto pra você?`;
+      }
+      if (intencao === 'horario_func') {
+        return `Temos 4 unidades abertas 24 horas (Bela Vista, Santana, Ipiranga, Campo Limpo) 🕐\nAs demais funcionam entre 8h e 20h, de seg a sáb (algumas até domingo!).\n\nQuer agendar um horário?`;
+      }
+      if (intencao === 'servicos') {
+        return `Oferecemos tudo que seu pet precisa! 🐾\n✂️ Banho & Tosa | 🩺 Consulta Veterinária | 💉 Vacinação\n🏡 Hotel | 🎾 Creche com playground | 🚨 Emergência 24h\n\nQuer agendar algum desses?`;
+      }
+      return null;
+    }
+
+    // ── GERA PERGUNTA DA ETAPA ATUAL ──
+    function perguntaEtapa(et) {
+      const n = dados.nomePet;
+      const perguntas = {
+        nomePet:  `Que fofura! 🐾 Qual é o nome do seu pet?`,
+        tipo:     `${n} já amei o nome! 💕 É cachorro, gato, ou outro bichinho?`,
+        porte:    `Entendido! ${n} é de porte pequeno, médio ou grande?`,
+        servico:  `Ótimo! O que você precisa para o ${n}?\n(Banho+Tosa, Consulta, Hotel, Creche, Vacinação...)`,
+        data:     `Perfeito! 📅 Quando você quer trazer o ${n}? (ex: amanhã, sábado, 15/03...)`,
+        horario:  `Que horário fica melhor? ⏰ (ex: 10h, tarde, manhã...)`,
+        nomeDono: `Quase lá! 😊 Qual é o seu nome?`,
+        telefone: `Me passa o seu telefone com DDD pra gente confirmar tudo! 📱`
+      };
+      return perguntas[et] || null;
+    }
+
+    // ── RESPOSTA INTELIGENTE ──
+    function geraResposta(userMsg) {
+      const intencao = detectaIntencao(userMsg);
+
+      // Em qualquer etapa, responde dúvidas antes de continuar
+      if (['preco', 'unidade', 'horario_func', 'servicos'].includes(intencao) && etapa !== 'fim') {
+        const resp = respostaDuvida(intencao, userMsg);
+        if (resp) {
+          // Se ainda não começou o agendamento, oferece continuar
+          if (etapa === 'inicio' || etapa === 'duvida') {
+            etapa = 'duvida';
+            return resp + `\n\nQuer que eu já agende um horário? 😊`;
+          }
+          // Se já está no fluxo, responde e repete a pergunta atual
+          const perg = perguntaEtapa(etapa);
+          return resp + (perg ? `\n\nContinuando o agendamento — ${perg.toLowerCase()}` : '');
+        }
+      }
+
+      // Intenção de confirmar quando estava em dúvida
+      if (etapa === 'duvida' && intencao === 'confirma') {
+        etapa = 'nomePet';
+        return perguntaEtapa('nomePet');
+      }
+
+      // Fluxo de agendamento
+      switch (etapa) {
+        case 'inicio':
+        case 'duvida':
+          etapa = 'nomePet';
+          return perguntaEtapa('nomePet');
+
+        case 'nomePet':
+          dados.nomePet = userMsg.trim();
+          etapa = 'tipo';
+          return perguntaEtapa('tipo');
+
+        case 'tipo':
+          dados.tipo = userMsg.trim();
+          // Verifica se já mencionou porte
+          const p = detectaPorte(userMsg);
+          if (p) {
+            dados.porte = p;
+            etapa = 'servico';
+            return `${dados.nomePet} de porte ${p}, anotei! ✅\n${perguntaEtapa('servico')}`;
+          }
+          etapa = 'porte';
+          return perguntaEtapa('porte');
+
+        case 'porte':
+          dados.porte = userMsg.trim();
+          etapa = 'servico';
+          return perguntaEtapa('servico');
+
+        case 'servico':
+          const srv = detectaServico(userMsg) || userMsg.trim();
+          dados.servico = srv;
+          etapa = 'data';
+          return `${srv} para o ${dados.nomePet}! Boa escolha 😍\n${perguntaEtapa('data')}`;
+
+        case 'data':
+          dados.data = userMsg.trim();
+          etapa = 'horario';
+          return perguntaEtapa('horario');
+
+        case 'horario':
+          dados.horario = userMsg.trim();
+          etapa = 'nomeDono';
+          return perguntaEtapa('nomeDono');
+
+        case 'nomeDono':
+          dados.nomeDono = userMsg.trim();
+          etapa = 'telefone';
+          return perguntaEtapa('telefone');
+
+        case 'telefone':
+          dados.telefone = userMsg.trim();
+          etapa = 'fim';
+          return `Tudo certo, ${dados.nomeDono}! 🎉\n\n🐾 Pet: ${dados.nomePet} (${dados.tipo}${dados.porte ? ' — porte ' + dados.porte : ''})\n✂️ Serviço: ${dados.servico}\n📅 Data: ${dados.data} às ${dados.horario}\n📱 Tel: ${dados.telefone}\n\nVou abrir o WhatsApp agora pra confirmar seu horário! 🟢`;
+
+        case 'fim':
+          return `Já enviei seus dados pro WhatsApp! 😊 Se precisar de mais alguma coisa, pode perguntar. Até logo, ${dados.nomeDono}! 🐾`;
+
+        default:
+          etapa = 'nomePet';
+          return perguntaEtapa('nomePet');
+      }
+    }
+
+    // ── EXIBE MENSAGEM ──
     function addMessage(text, who = 'them') {
       const div = document.createElement('div');
       div.className = `message ${who}`;
@@ -1662,8 +1849,7 @@
 
     function showTyping() {
       const el = document.createElement('div');
-      el.className = 'typing';
-      el.id = 'typing';
+      el.className = 'typing'; el.id = 'typing';
       el.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
       chat.appendChild(el);
       chat.scrollTop = chat.scrollHeight;
@@ -1671,29 +1857,7 @@
 
     function removeTyping() { document.getElementById('typing')?.remove(); }
 
-    function botResponde() {
-      if (step >= mensagens.length) return;
-      showTyping();
-      setTimeout(() => {
-        removeTyping();
-        let txt = typeof mensagens[step] === 'function'
-          ? mensagens[step](dados.nomePet || dados.nomeDono, dados.telefone)
-          : mensagens[step];
-        addMessage(txt);
-
-        if (step === 8) {
-          setTimeout(() => {
-            const msg = encodeURIComponent(
-              `Oi Pet Royal! Quero confirmar o agendamento:\n\nPet: ${dados.nomePet} (${dados.tipo} — porte ${dados.porte})\nServiço: ${dados.servico}\nData desejada: ${dados.data}\nHorário: ${dados.horario}\nDono: ${dados.nomeDono}\nTelefone: ${dados.telefone}\n\nObrigado! 🐾✨`
-            );
-            window.open(`https://wa.me/5511944806602?text=${msg}`, '_blank');
-            setTimeout(closeChat, 3000);
-          }, 2400);
-        }
-        step++;
-      }, 1200 + Math.random() * 1400);
-    }
-
+    // ── ENVIA MENSAGEM ──
     function sendMessage() {
       const text = input.value.trim();
       if (!text) return;
@@ -1701,33 +1865,45 @@
       input.value = '';
       sendBtn.classList.remove('active');
 
-      if (step === 1) dados.nomePet = text;
-      else if (step === 2) dados.tipo = text;
-      else if (step === 3) dados.porte = text;
-      else if (step === 4) dados.servico = text;
-      else if (step === 5) dados.data = text;
-      else if (step === 6) dados.horario = text;
-      else if (step === 7) dados.nomeDono = text;
-      else if (step === 8) dados.telefone = text;
+      const delay = 800 + Math.random() * 700;
+      showTyping();
 
-      botResponde();
+      setTimeout(() => {
+        removeTyping();
+        const resposta = geraResposta(text);
+        addMessage(resposta);
+
+        // Se chegou no fim, abre o WhatsApp
+        if (etapa === 'fim') {
+          setTimeout(() => {
+            const msg = encodeURIComponent(
+              `Oi Pet Royal! 🐾 Quero confirmar meu agendamento:\n\nPet: ${dados.nomePet} (${dados.tipo}${dados.porte ? ' — porte ' + dados.porte : ''})\nServiço: ${dados.servico}\nData: ${dados.data} às ${dados.horario}\nTutor: ${dados.nomeDono}\nTelefone: ${dados.telefone}\n\nObrigado! ✨`
+            );
+            window.open(`https://wa.me/5511944806602?text=${msg}`, '_blank');
+          }, 1800);
+        }
+      }, delay);
     }
 
+    // ── ABRE CHAT ──
     function openChat() {
       chatSection.style.display = 'flex';
       setTimeout(() => chatSection.classList.add('active'), 20);
-      if (step === 0) {
+
+      if (!chatAberto) {
+        chatAberto = true;
         chat.innerHTML = '';
+        dados = {}; etapa = 'inicio';
         showTyping();
         setTimeout(() => {
           removeTyping();
-          addMessage(mensagens[0]);
-          step = 1;
-        }, 1000);
+          addMessage(`Oiii! 🐾 Bem-vind@ à Pet Royal!\nSou a Lia, sua atendente virtual. Posso te ajudar a agendar um serviço, tirar dúvidas sobre preços, unidades ou horários.\n\nComo posso te ajudar hoje? 😊`);
+        }, 900);
       }
       input.focus();
     }
 
+    // ── FECHA CHAT ──
     function closeChat() {
       chatSection.classList.remove('active');
       setTimeout(() => chatSection.style.display = 'none', 500);
@@ -1736,18 +1912,10 @@
     input.addEventListener('input', () => {
       sendBtn.classList.toggle('active', input.value.trim().length > 0);
     });
-
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
     sendBtn.onclick = sendMessage;
+    chatSection.addEventListener('click', (e) => { if (e.target === chatSection) closeChat(); });
 
-    chatSection.addEventListener('click', (e) => {
-      if (e.target === chatSection) closeChat();
-    });
-
-    // ── MAPA GTA PINS ──
     const unidades = [
       { nome: 'Bela Vista',    end: 'R. Augusta, 215',            lat: -23.5508, lng: -46.6481, h: 'Aberto 24h',               tel: '(11) 3333-0001', servicos: 'Banho, Tosa, Consulta Vet, Vacinação, Hotel', principal: true  },
       { nome: 'Consolação',    end: 'R. da Consolação, 2430',     lat: -23.5530, lng: -46.6592, h: 'Seg–Sáb: 8h às 20h',       tel: '(11) 3333-0002', servicos: 'Banho, Tosa, Consulta Vet',                  principal: false },
