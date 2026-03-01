@@ -718,178 +718,277 @@
       padding: 4px 12px; border-radius: 20px;
     }
 
-    /* ── HAMBURGER MENU ── */
+    /* ══════════════════════════════
+       HAMBURGER MENU
+    ══════════════════════════════ */
     .hamburger {
       display: none;
       flex-direction: column;
+      justify-content: center;
       gap: 5px;
       cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
-      transition: background 0.2s;
+      padding: 8px;
+      border-radius: 8px;
       background: none;
       border: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .hamburger:hover { background: rgba(26,74,58,0.08); }
     .hamburger span {
-      display: block; width: 24px; height: 2px;
-      background: var(--primary); border-radius: 2px;
+      display: block;
+      width: 22px; height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
       transition: all 0.35s cubic-bezier(0.23,1,0.32,1);
+      transform-origin: center;
     }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* Mobile nav drawer */
+    /* Mobile Nav — full screen drawer */
     .mobile-nav {
       display: none;
-      position: fixed; inset: 0; top: 69px;
-      background: rgba(250,249,246,0.98);
-      backdrop-filter: blur(16px);
-      z-index: 99;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #faf9f6;
+      z-index: 98;
       flex-direction: column;
-      padding: 32px 28px;
-      gap: 0;
       transform: translateX(100%);
       transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
-      border-top: 1px solid rgba(26,74,58,0.08);
+      overflow-y: auto;
     }
     .mobile-nav.open { transform: translateX(0); }
-    .mobile-nav a {
-      display: block;
+
+    .mobile-nav-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(26,74,58,0.08);
+      background: #faf9f6;
+      position: sticky; top: 0; z-index: 2;
+    }
+    .mobile-nav-close {
+      background: none; border: none;
+      font-size: 1.4rem; cursor: pointer;
+      color: var(--primary); padding: 4px 8px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-nav-links { padding: 8px 24px; flex: 1; }
+    .mobile-nav-links a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       color: var(--primary);
       text-decoration: none;
       font-weight: 600;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       padding: 18px 0;
-      border-bottom: 1px solid rgba(26,74,58,0.07);
-      transition: color 0.2s, padding-left 0.2s;
-      letter-spacing: -0.2px;
+      border-bottom: 1px solid rgba(26,74,58,0.06);
+      -webkit-tap-highlight-color: transparent;
     }
-    .mobile-nav a:hover { color: var(--primary-light); padding-left: 8px; }
-    .mobile-nav .btn-mobile-cta {
-      margin-top: 32px;
-      background: var(--primary);
-      color: white;
+    .mobile-nav-links a::after { content: '›'; font-size: 1.3rem; opacity: 0.3; }
+    .mobile-nav-cta {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn-mnav {
+      display: block;
       text-align: center;
-      padding: 18px;
-      border-radius: 8px;
+      padding: 17px;
+      border-radius: 10px;
       font-weight: 700;
-      font-size: 1.05rem;
-      cursor: pointer;
-      transition: all 0.3s;
+      font-size: 1rem;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .mobile-nav .btn-mobile-cta:hover {
-      background: var(--primary-light);
-      color: white;
+    .btn-mnav.primary { background: var(--primary); color: white; }
+    .btn-mnav.wpp { background: #25D366; color: white; }
+
+    /* ══════════════════════════════
+       HERO STATS MOBILE STRIP
+    ══════════════════════════════ */
+    .hero-stats-mobile {
+      display: none;
+      justify-content: space-around;
+      background: white;
+      padding: 20px 16px;
+      border-bottom: 2px solid var(--accent);
     }
-    /* Mobile nav social row */
-    .mobile-nav-footer {
-      margin-top: auto;
-      padding-top: 32px;
-      display: flex; gap: 16px; align-items: center;
+    .hero-stats-mobile .stat-m { text-align: center; flex: 1; }
+    .hero-stats-mobile .stat-m .n {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem; font-weight: 900;
+      color: var(--primary); line-height: 1;
     }
-    .mobile-nav-footer a {
-      border: none; padding: 0; font-size: 0.85rem;
-      color: var(--gray); font-weight: 400;
+    .hero-stats-mobile .stat-m .l {
+      font-size: 0.67rem; color: var(--gray);
+      font-weight: 500; margin-top: 4px;
+      letter-spacing: 0.3px;
     }
 
-    /* ── RESPONSIVE ── */
+    /* ══════════════════════════════
+       UNIDADES — MOBILE CARD LIST
+    ══════════════════════════════ */
+    .unidades-mobile-list { display: none; }
+
+    .unidade-card-mobile {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+    .ucm-header {
+      display: flex; align-items: center;
+      gap: 12px; margin-bottom: 14px;
+    }
+    .ucm-badge {
+      width: 34px; height: 34px;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-weight: 900; font-size: 0.9rem; flex-shrink: 0;
+    }
+    .ucm-name-wrap { flex: 1; }
+    .ucm-name { font-weight: 700; color: white; font-size: 0.97rem; line-height: 1.2; }
+    .ucm-principal {
+      display: inline-block;
+      background: #f5c842; color: #0d1a14;
+      font-size: 0.56rem; font-weight: 700;
+      padding: 2px 7px; border-radius: 20px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      margin-left: 6px; vertical-align: middle;
+    }
+    .ucm-body { display: flex; flex-direction: column; gap: 7px; }
+    .ucm-row { display: flex; align-items: flex-start; gap: 8px; }
+    .ucm-row .icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 1px; }
+    .ucm-text { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.45; }
+    .ucm-horario { color: #4ade80 !important; font-weight: 600; }
+    .ucm-actions {
+      display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;
+    }
+    .ucm-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 0.8rem; font-weight: 600;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+      border: none; cursor: pointer; font-family: inherit;
+    }
+    .ucm-btn.tel {
+      background: rgba(37,211,102,0.15);
+      color: #4ade80;
+      border: 1px solid rgba(37,211,102,0.3);
+    }
+    .ucm-btn.wpp {
+      background: rgba(37,211,102,0.9);
+      color: white;
+    }
+    .ucm-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px; margin-top: 10px;
+    }
+
+    /* ══════════════════════════════
+       RESPONSIVE BREAKPOINTS
+    ══════════════════════════════ */
     @media (max-width: 1000px) {
       .hero-stats { display: none; }
     }
 
     @media (max-width: 768px) {
-      /* HEADER */
+      /* Nav */
       .nav-links, nav > .btn { display: none; }
       .hamburger { display: flex; }
       .mobile-nav { display: flex; }
 
-      /* HERO */
-      #hero { min-height: 100svh; align-items: flex-end; padding-bottom: 40px; }
-      .hero-content { padding: 120px 0 40px; max-width: 100%; }
-      #hero h1 { font-size: clamp(2.2rem, 8vw, 3.2rem); letter-spacing: -0.5px; margin-bottom: 20px; }
-      #hero p { font-size: 1rem; margin-bottom: 32px; }
-      .hero-tag { font-size: 0.72rem; padding: 6px 14px; margin-bottom: 20px; }
-      .hero-btns { flex-direction: column; gap: 12px; }
+      /* Global */
+      .container { padding: 0 18px; }
+      h2 { font-size: clamp(1.75rem, 6vw, 2.4rem); }
+      .section-header { margin-bottom: 36px; }
+      .section-header p { font-size: 0.95rem; }
+
+      /* Hero */
+      #hero { min-height: 100svh; align-items: flex-end; }
+      .hero-content { padding: 100px 0 48px; max-width: 100%; }
+      #hero h1 { font-size: clamp(2rem, 8vw, 3rem); letter-spacing: -0.5px; margin-bottom: 18px; }
+      #hero p { font-size: 1rem; margin-bottom: 28px; }
+      .hero-tag { font-size: 0.7rem; padding: 6px 14px; margin-bottom: 16px; }
+      .hero-btns { flex-direction: column; gap: 10px; }
       .btn-hero-main, .btn-hero-outline {
-        text-align: center; padding: 16px 28px;
-        font-size: 0.95rem; width: 100%;
-      }
-      .hero-stats { display: none; }
-
-      /* MINI STATS ROW below hero */
-      .hero-stats-mobile {
-        display: flex !important;
-        justify-content: space-around;
-        background: white;
-        padding: 20px 16px;
-        border-bottom: 2px solid var(--accent);
-        gap: 8px;
-      }
-      .hero-stats-mobile .stat-m {
-        text-align: center; flex: 1;
-      }
-      .hero-stats-mobile .stat-m .n {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.6rem; font-weight: 900;
-        color: var(--primary); line-height: 1;
-      }
-      .hero-stats-mobile .stat-m .l {
-        font-size: 0.68rem; color: var(--gray);
-        font-weight: 500; margin-top: 4px;
-        letter-spacing: 0.3px;
+        text-align: center; padding: 16px 24px;
+        font-size: 0.95rem; width: 100%; display: block;
       }
 
-      /* SECTIONS */
-      #vantagens, #precos, #avaliacoes, #cta { padding: 72px 0; }
-      .container { padding: 0 20px; }
-      h2 { font-size: clamp(1.8rem, 6vw, 2.4rem); }
-      .section-header { margin-bottom: 40px; }
-      .section-header p { font-size: 0.96rem; }
-      .grid-3 { grid-template-columns: 1fr; gap: 20px; }
+      /* Stats mobile strip */
+      .hero-stats-mobile { display: flex; }
+
+      /* Sections */
+      #vantagens { padding: 64px 0; }
+      #precos { padding: 64px 0; }
+      #avaliacoes { padding: 64px 0; }
+      #cta { padding: 72px 20px; }
+
+      /* Vantagens */
+      .grid-3 { grid-template-columns: 1fr; gap: 18px; }
       .card-img { height: 200px; }
+      .card-content { padding: 22px 18px; }
 
-      /* BEFORE/AFTER */
-      .gallery-before-after { flex-direction: column; align-items: center; gap: 20px; }
+      /* Before/After */
+      .gallery-before-after { flex-direction: column; align-items: center; gap: 16px; }
       .before-after-item { max-width: 100%; }
-      .before-after-item img { height: 220px; }
+      .before-after-item img { height: 200px; }
 
-      /* PRICING TABLE — card style on mobile */
-      .tabela-preco-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-      .tabela-preco { min-width: 520px; font-size: 0.82rem; }
-      .tabela-preco th, .tabela-preco td { padding: 10px 8px; }
-      .tabela-nota { font-size: 0.82rem; }
-
-      /* RATING SUMMARY */
-      .rating-summary { flex-direction: column; align-items: center; padding: 24px 20px; gap: 24px; }
-      .rating-big .num { font-size: 4rem; }
-      .rating-bars { width: 100%; min-width: unset; }
-      .rating-badge { width: 100%; }
-      .reviews-grid { grid-template-columns: 1fr; gap: 16px; }
-      .review-card { padding: 20px; }
+      /* Pricing table: horizontal scroll */
+      .tabela-preco-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(26,74,58,0.1);
+      }
+      .tabela-preco { min-width: 480px; font-size: 0.8rem; border-radius: 0; box-shadow: none; }
+      .tabela-preco th, .tabela-preco td { padding: 12px 10px; }
+      .tabela-nota { font-size: 0.8rem; padding: 0 4px; }
 
       /* CTA */
-      #cta { padding: 80px 20px; }
-      #cta h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); }
+      #cta h2 { font-size: clamp(1.75rem, 6vw, 2.4rem); }
       #cta p { font-size: 1rem; }
-      .btn-wpp { padding: 16px 32px; font-size: 1rem; width: 100%; justify-content: center; }
+      .btn-wpp { padding: 16px 28px; font-size: 1rem; width: 100%; justify-content: center; }
 
-      /* FOOTER */
-      .footer-inner { flex-direction: column; gap: 32px; }
-      .footer-bottom { flex-direction: column; text-align: center; gap: 8px; }
+      /* Avaliações */
+      .rating-summary { flex-direction: column; align-items: stretch; padding: 22px 18px; gap: 20px; }
+      .rating-big .num { font-size: 4rem; }
+      .rating-bars { min-width: unset; }
+      .rating-badge { width: 100%; }
+      .reviews-grid { grid-template-columns: 1fr; gap: 14px; }
+      .review-card { padding: 18px; }
 
-      /* CHAT */
-      .chat-modal { height: 100svh; border-radius: 0; max-width: 100%; }
+      /* Unidades: hide map, show card list */
+      #unidades { padding: 64px 0 !important; }
+      #mapa-gta { display: none !important; }
+      #cards-unidades { display: none !important; }
+      .unidades-mobile-list { display: block; margin-top: 24px; }
 
-      /* UNIDADES */
-      #unidades .section-header { margin-bottom: 28px; }
+      /* Footer */
+      footer { padding: 52px 18px 32px; }
+      .footer-inner { flex-direction: column; gap: 28px; }
+      .footer-brand p { max-width: 100%; }
+      .footer-bottom { flex-direction: column; text-align: center; gap: 10px; }
+
+      /* Chat modal */
+      .chat-modal { height: 100svh; max-height: 100svh; border-radius: 0; max-width: 100%; }
     }
 
     @media (max-width: 480px) {
-      .logo { font-size: 1.6rem; }
-      .logo-badge { font-size: 0.52rem; }
+      .logo { font-size: 1.5rem; }
+      .logo-badge { font-size: 0.5rem; padding: 2px 6px; }
       nav { padding: 14px 0; }
+      .hero-content { padding: 90px 0 40px; }
     }
   </style>
 </head>
@@ -914,16 +1013,20 @@
     </div>
     <!-- Mobile Nav Drawer -->
     <div class="mobile-nav" id="mobileNav">
-      <a href="#vantagens" onclick="closeMobileNav()">Vantagens</a>
-      <a href="#precos" onclick="closeMobileNav()">Serviços & Preços</a>
-      <a href="#avaliacoes" onclick="closeMobileNav()">Avaliações</a>
-      <a href="#unidades" onclick="closeMobileNav()">Unidades</a>
-      <a href="#contato" onclick="closeMobileNav()">Contato</a>
-      <div class="btn-mobile-cta" onclick="closeMobileNav(); openChat();">Agendar agora 🐾</div>
-      <div class="mobile-nav-footer">
-        <a href="https://wa.me/5511944806602" target="_blank">WhatsApp</a>
-        <span style="color:#ddd;">·</span>
-        <a href="#contato" onclick="closeMobileNav()">Localização</a>
+      <div class="mobile-nav-header">
+        <div class="logo">Pet<span style="color:#e8855a;">Royal</span></div>
+        <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Fechar menu">✕</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="#vantagens" onclick="closeMobileNav()">Vantagens</a>
+        <a href="#precos" onclick="closeMobileNav()">Serviços & Preços</a>
+        <a href="#avaliacoes" onclick="closeMobileNav()">Avaliações</a>
+        <a href="#unidades" onclick="closeMobileNav()">Unidades</a>
+        <a href="#contato" onclick="closeMobileNav()">Contato</a>
+      </div>
+      <div class="mobile-nav-cta">
+        <div class="btn-mnav primary" onclick="closeMobileNav(); openChat();">Agendar agora 🐾</div>
+        <a class="btn-mnav wpp" href="https://wa.me/5511944806602" target="_blank">WhatsApp 📱</a>
       </div>
     </div>
   </header>
@@ -960,7 +1063,7 @@
   </section>
 
   <!-- Mobile-only stats strip -->
-  <div class="hero-stats-mobile" style="display:none;">
+  <div class="hero-stats-mobile">
     <div class="stat-m"><div class="n">+5k</div><div class="l">Pets atendidos</div></div>
     <div class="stat-m" style="border-left:1px solid #eee;border-right:1px solid #eee;"><div class="n">24h</div><div class="l">Plantão vet.</div></div>
     <div class="stat-m"><div class="n">98%</div><div class="l">Satisfação</div></div>
@@ -1327,8 +1430,11 @@
         </div>
       </div>
 
-      <!-- Cards das unidades -->
+      <!-- Cards das unidades (desktop) -->
       <div id="cards-unidades" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:28px;"></div>
+
+      <!-- Unidades mobile list -->
+      <div class="unidades-mobile-list" id="unidades-mobile-list"></div>
     </div>
   </section>
 
@@ -2173,6 +2279,62 @@
       `).join('');
     }
 
+    function buildMobileList() {
+      const list = document.getElementById('unidades-mobile-list');
+      if (!list) return;
+
+      function isAbertaCheck(h) {
+        if (h.toLowerCase().includes('24h')) return true;
+        const now = new Date();
+        const hhmm = now.getHours() * 60 + now.getMinutes();
+        const match = h.match(/(\d+)h(?:\s*às?\s*|\s*–\s*)(\d+)/);
+        if (!match) return false;
+        return hhmm >= parseInt(match[1]) * 60 && hhmm < parseInt(match[2]) * 60;
+      }
+
+      list.innerHTML = unidades.map((u) => {
+        const isOpen = isAbertaCheck(u.h);
+        const badgeBg = u.principal ? '#f5c842' : '#e8855a';
+        const badgeColor = u.principal ? '#0d1a14' : 'white';
+        const statusBg = isOpen ? 'rgba(45,122,96,0.3)' : 'rgba(192,57,43,0.2)';
+        const statusColor = isOpen ? '#4ade80' : '#f87171';
+        const statusText = isOpen ? '● Aberta agora' : '○ Fechada';
+        const wppMsg = encodeURIComponent(`Olá! Vi o Pet Royal ${u.nome} e gostaria de agendar um serviço.`);
+
+        return `
+          <div class="unidade-card-mobile">
+            <div class="ucm-header">
+              <div class="ucm-badge" style="background:${badgeBg};color:${badgeColor};">R</div>
+              <div class="ucm-name-wrap">
+                <div class="ucm-name">
+                  ${u.nome}
+                  ${u.principal ? '<span class="ucm-principal">Principal</span>' : ''}
+                </div>
+              </div>
+            </div>
+            <div class="ucm-body">
+              <div class="ucm-row">
+                <span class="icon">📍</span>
+                <span class="ucm-text">${u.end}</span>
+              </div>
+              <div class="ucm-row">
+                <span class="icon">🕐</span>
+                <span class="ucm-text ucm-horario">${u.h}</span>
+              </div>
+              <div class="ucm-row">
+                <span class="icon">🐾</span>
+                <span class="ucm-text">${u.servicos}</span>
+              </div>
+            </div>
+            <div class="ucm-status" style="background:${statusBg};color:${statusColor};">${statusText}</div>
+            <div class="ucm-actions">
+              <a class="ucm-btn tel" href="tel:${u.tel.replace(/[^\d]/g,'')}">📞 ${u.tel}</a>
+              <a class="ucm-btn wpp" href="https://wa.me/55${u.tel.replace(/[^\d]/g,'').replace(/^0/,'')}&text=${wppMsg}" target="_blank">💬 WhatsApp</a>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
     function renderPins() {
       const container = document.getElementById('pins-container');
       if (!container) return;
@@ -2245,7 +2407,7 @@
       document.body.style.overflow = '';
     }
 
-    window.addEventListener('load', () => { buildCards(); renderPins(); });
+    window.addEventListener('load', () => { buildCards(); buildMobileList(); renderPins(); });
     window.addEventListener('resize', renderPins);
 
     // ── DASHBOARD ──
@@ -2292,6 +2454,14 @@
 
     function updateClock() {
       const el = document.getElementById('dash-clock');
-      if (el) {
-        const now = new Date();
-        el.textContent = now.toLo
+      if (!el) return;
+      const now = new Date();
+      el.textContent = now.toLocaleString('pt-BR', {
+        weekday: 'short', day: '2-digit', month: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+    }
+
+  </script>
+</body>
+</html>
