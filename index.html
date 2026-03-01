@@ -718,22 +718,178 @@
       padding: 4px 12px; border-radius: 20px;
     }
 
+    /* ── HAMBURGER MENU ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      background: none;
+      border: none;
+    }
+    .hamburger:hover { background: rgba(26,74,58,0.08); }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--primary); border-radius: 2px;
+      transition: all 0.35s cubic-bezier(0.23,1,0.32,1);
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile nav drawer */
+    .mobile-nav {
+      display: none;
+      position: fixed; inset: 0; top: 69px;
+      background: rgba(250,249,246,0.98);
+      backdrop-filter: blur(16px);
+      z-index: 99;
+      flex-direction: column;
+      padding: 32px 28px;
+      gap: 0;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+      border-top: 1px solid rgba(26,74,58,0.08);
+    }
+    .mobile-nav.open { transform: translateX(0); }
+    .mobile-nav a {
+      display: block;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.25rem;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(26,74,58,0.07);
+      transition: color 0.2s, padding-left 0.2s;
+      letter-spacing: -0.2px;
+    }
+    .mobile-nav a:hover { color: var(--primary-light); padding-left: 8px; }
+    .mobile-nav .btn-mobile-cta {
+      margin-top: 32px;
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .mobile-nav .btn-mobile-cta:hover {
+      background: var(--primary-light);
+      color: white;
+    }
+    /* Mobile nav social row */
+    .mobile-nav-footer {
+      margin-top: auto;
+      padding-top: 32px;
+      display: flex; gap: 16px; align-items: center;
+    }
+    .mobile-nav-footer a {
+      border: none; padding: 0; font-size: 0.85rem;
+      color: var(--gray); font-weight: 400;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 1000px) {
       .hero-stats { display: none; }
     }
 
     @media (max-width: 768px) {
-      #hero h1 { font-size: 2.8rem; }
-      h2 { font-size: 2.3rem; }
-      .nav-links { display: none; }
-      .chat-modal { height: 100vh; border-radius: 0; max-width: none; }
-      .footer-inner { flex-direction: column; }
-      .footer-bottom { flex-direction: column; text-align: center; }
-      .hero-btns { flex-direction: column; }
-      .btn-hero-main, .btn-hero-outline { text-align: center; }
-      .tabela-preco { font-size: 0.88rem; }
-      .tabela-preco th, .tabela-preco td { padding: 12px 10px; }
+      /* HEADER */
+      .nav-links, nav > .btn { display: none; }
+      .hamburger { display: flex; }
+      .mobile-nav { display: flex; }
+
+      /* HERO */
+      #hero { min-height: 100svh; align-items: flex-end; padding-bottom: 40px; }
+      .hero-content { padding: 120px 0 40px; max-width: 100%; }
+      #hero h1 { font-size: clamp(2.2rem, 8vw, 3.2rem); letter-spacing: -0.5px; margin-bottom: 20px; }
+      #hero p { font-size: 1rem; margin-bottom: 32px; }
+      .hero-tag { font-size: 0.72rem; padding: 6px 14px; margin-bottom: 20px; }
+      .hero-btns { flex-direction: column; gap: 12px; }
+      .btn-hero-main, .btn-hero-outline {
+        text-align: center; padding: 16px 28px;
+        font-size: 0.95rem; width: 100%;
+      }
+      .hero-stats { display: none; }
+
+      /* MINI STATS ROW below hero */
+      .hero-stats-mobile {
+        display: flex !important;
+        justify-content: space-around;
+        background: white;
+        padding: 20px 16px;
+        border-bottom: 2px solid var(--accent);
+        gap: 8px;
+      }
+      .hero-stats-mobile .stat-m {
+        text-align: center; flex: 1;
+      }
+      .hero-stats-mobile .stat-m .n {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.6rem; font-weight: 900;
+        color: var(--primary); line-height: 1;
+      }
+      .hero-stats-mobile .stat-m .l {
+        font-size: 0.68rem; color: var(--gray);
+        font-weight: 500; margin-top: 4px;
+        letter-spacing: 0.3px;
+      }
+
+      /* SECTIONS */
+      #vantagens, #precos, #avaliacoes, #cta { padding: 72px 0; }
+      .container { padding: 0 20px; }
+      h2 { font-size: clamp(1.8rem, 6vw, 2.4rem); }
+      .section-header { margin-bottom: 40px; }
+      .section-header p { font-size: 0.96rem; }
+      .grid-3 { grid-template-columns: 1fr; gap: 20px; }
+      .card-img { height: 200px; }
+
+      /* BEFORE/AFTER */
+      .gallery-before-after { flex-direction: column; align-items: center; gap: 20px; }
+      .before-after-item { max-width: 100%; }
+      .before-after-item img { height: 220px; }
+
+      /* PRICING TABLE — card style on mobile */
+      .tabela-preco-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .tabela-preco { min-width: 520px; font-size: 0.82rem; }
+      .tabela-preco th, .tabela-preco td { padding: 10px 8px; }
+      .tabela-nota { font-size: 0.82rem; }
+
+      /* RATING SUMMARY */
+      .rating-summary { flex-direction: column; align-items: center; padding: 24px 20px; gap: 24px; }
+      .rating-big .num { font-size: 4rem; }
+      .rating-bars { width: 100%; min-width: unset; }
+      .rating-badge { width: 100%; }
+      .reviews-grid { grid-template-columns: 1fr; gap: 16px; }
+      .review-card { padding: 20px; }
+
+      /* CTA */
+      #cta { padding: 80px 20px; }
+      #cta h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); }
+      #cta p { font-size: 1rem; }
+      .btn-wpp { padding: 16px 32px; font-size: 1rem; width: 100%; justify-content: center; }
+
+      /* FOOTER */
+      .footer-inner { flex-direction: column; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; gap: 8px; }
+
+      /* CHAT */
+      .chat-modal { height: 100svh; border-radius: 0; max-width: 100%; }
+
+      /* UNIDADES */
+      #unidades .section-header { margin-bottom: 28px; }
+    }
+
+    @media (max-width: 480px) {
+      .logo { font-size: 1.6rem; }
+      .logo-badge { font-size: 0.52rem; }
+      nav { padding: 14px 0; }
     }
   </style>
 </head>
@@ -751,7 +907,24 @@
           <li><a href="#contato">Contato</a></li>
         </ul>
         <div class="btn" onclick="openChat()">Agendar agora 🐾</div>
+        <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+          <span></span><span></span><span></span>
+        </button>
       </nav>
+    </div>
+    <!-- Mobile Nav Drawer -->
+    <div class="mobile-nav" id="mobileNav">
+      <a href="#vantagens" onclick="closeMobileNav()">Vantagens</a>
+      <a href="#precos" onclick="closeMobileNav()">Serviços & Preços</a>
+      <a href="#avaliacoes" onclick="closeMobileNav()">Avaliações</a>
+      <a href="#unidades" onclick="closeMobileNav()">Unidades</a>
+      <a href="#contato" onclick="closeMobileNav()">Contato</a>
+      <div class="btn-mobile-cta" onclick="closeMobileNav(); openChat();">Agendar agora 🐾</div>
+      <div class="mobile-nav-footer">
+        <a href="https://wa.me/5511944806602" target="_blank">WhatsApp</a>
+        <span style="color:#ddd;">·</span>
+        <a href="#contato" onclick="closeMobileNav()">Localização</a>
+      </div>
     </div>
   </header>
 
@@ -785,6 +958,13 @@
       </div>
     </div>
   </section>
+
+  <!-- Mobile-only stats strip -->
+  <div class="hero-stats-mobile" style="display:none;">
+    <div class="stat-m"><div class="n">+5k</div><div class="l">Pets atendidos</div></div>
+    <div class="stat-m" style="border-left:1px solid #eee;border-right:1px solid #eee;"><div class="n">24h</div><div class="l">Plantão vet.</div></div>
+    <div class="stat-m"><div class="n">98%</div><div class="l">Satisfação</div></div>
+  </div>
 
   <div class="faixa">
     <div class="faixa-inner">
@@ -860,6 +1040,7 @@
         </div>
       </div>
 
+      <div class="tabela-preco-wrap">
       <table class="tabela-preco">
         <thead>
           <tr>
@@ -913,6 +1094,7 @@
           </tr>
         </tbody>
       </table>
+      </div><!-- /tabela-preco-wrap -->
 
       <p class="tabela-nota">* Valores válidos em fevereiro/2026. Pacotes mensais e fidelidade com até 25% de desconto.</p>
     </div>
@@ -1181,7 +1363,7 @@
         <div class="footer-col">
           <h4>Contato</h4>
           <a href="https://wa.me/5511944806602" target="_blank">📱 (11) 94480-6602</a>
-          <a href="mailto:contato@petroyal.com.br">✉️ contato@petroyal.com.br</a>
+          <a href="/cdn-cgi/l/email-protection#36555958425742597646534244594f575a1855595b185444">✉️ <span class="__cf_email__" data-cfemail="04676b6a7065706b44746170766b7d65682a676b692a6676">[email&#160;protected]</span></a>
           <p>📍 São Paulo – SP</p>
           <p>🕐 Seg–Sáb: 8h às 20h</p>
         </div>
@@ -1632,7 +1814,7 @@
   </div>
 
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     const chatSection = document.getElementById('chat-section');
     const chat = document.getElementById('chat');
     const input = document.getElementById('userInput');
@@ -2047,6 +2229,22 @@
       }
     });
 
+    // ── MOBILE NAV ──
+    function toggleMobileNav() {
+      const nav = document.getElementById('mobileNav');
+      const hamburger = document.getElementById('hamburger');
+      const isOpen = nav.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+    function closeMobileNav() {
+      const nav = document.getElementById('mobileNav');
+      const hamburger = document.getElementById('hamburger');
+      nav.classList.remove('open');
+      hamburger.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
     window.addEventListener('load', () => { buildCards(); renderPins(); });
     window.addEventListener('resize', renderPins);
 
@@ -2096,16 +2294,4 @@
       const el = document.getElementById('dash-clock');
       if (el) {
         const now = new Date();
-        el.textContent = now.toLocaleString('pt-BR', {
-          weekday: 'short',
-          day: '2-digit',
-          month: 'short',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        });
-      }
-    }
-  </script>
-</body>
-</html>
+        el.textContent = now.toLo
